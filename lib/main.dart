@@ -7,15 +7,21 @@ import 'package:sound_machines/app_repository.dart';
 import 'package:sound_machines/feature/auth/bloc/auth_bloc.dart';
 import 'package:sound_machines/feature/auth/data/auth_repository.dart';
 import 'package:sound_machines/servise/auth_service.dart';
+import 'package:sound_machines/feature/auth/ui/login_screen.dart';
+import 'package:sound_machines/feature/auth/ui/welcome_screen.dart';
 import 'package:sound_machines/servise/custom_bloc_observer.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sound_machines/utils/colors.dart';
 
+import 'feature/auth/bloc/auth_bloc.dart';
+import 'feature/auth/data/auth_repository.dart';
 import 'bloc/app_bloc.dart';
 import 'firebase_options.dart';
+
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,10 +56,13 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: GoogleFonts.ubuntu().fontFamily,
-        canvasColor: const Color(0xff292B57),
+        canvasColor: AppColors.blackColor,
       ),
       color: const Color(0xff292B57),
-      routes: {},
+      routes: {
+        '/welcome_screen' : (context) => const WelcomeScreen(),
+        '/login_screen' : (context) => const LoginScreen(),
+      },
       home: const HomePage(),
     );
   }
@@ -113,10 +122,7 @@ class HomePage extends StatelessWidget {
                 style: TextStyle(color: Colors.white),
               );
             } else {
-              return const Text(
-                "login",
-                style: TextStyle(color: Colors.white),
-              );
+              return const WelcomeScreen();
             }
           },
         ),
