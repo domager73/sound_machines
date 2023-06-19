@@ -2,19 +2,17 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:sound_machines/app_repository.dart';
-import 'package:sound_machines/feature/auth/bloc/auth_bloc.dart';
-import 'package:sound_machines/feature/auth/data/auth_repository.dart';
-import 'package:sound_machines/servise/auth_service.dart';
+import 'package:sound_machines/feature/auth/ui/login_screen.dart';
+import 'package:sound_machines/feature/auth/ui/welcome_screen.dart';
 import 'package:sound_machines/servise/custom_bloc_observer.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sound_machines/utils/colors.dart';
 
-import 'bloc/app_bloc.dart';
+import 'feature/auth/bloc/auth_bloc.dart';
+import 'feature/auth/data/auth_repository.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -55,6 +53,11 @@ class _MyAppState extends State<MyApp> {
       color: const Color(0xff292B57),
       routes: {},
       home: const HomePage(),
+      routes: {
+        '/welcome_screen' : (context) => const WelcomeScreen(),
+        '/login_screen' : (context) => const LoginScreen(),
+      },
+      home: const WelcomeScreen(),
     );
   }
 }
