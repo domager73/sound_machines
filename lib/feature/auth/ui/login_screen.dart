@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sound_machines/utils/colors.dart';
+import 'package:sound_machines/utils/dialogs.dart';
 import 'package:sound_machines/utils/fonts.dart';
 import 'package:sound_machines/widgets/buttons/custom_elevated_button.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../widgets/text_field/custom_text_field.dart';
 import '../../../widgets/text_field/password_text_field.dart';
+import '../bloc/auth_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -20,7 +23,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocListener<AuthBloc, AuthState>(
+  listener: (context, state) {
+    if (state is AuthSuccessState) {
+      Dialogs.hide(context);
+      Navigator.pop(context);
+    }
+    if (state is AuthLoadingState) {
+      Dialogs.showModal(context, const Center(child: CircularProgressIndicator()));
+    }
+
+    if (state is AuthFailState) {
+      Dialogs.hide(context);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Проблемс')));
+    }
+  },
+  child: Scaffold(
       appBar: AppBar(
         title: const Text(
           'Вход',
@@ -78,7 +96,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CustomElevatedButton(
-                          callback: () {},
+                          callback: () {
+                            BlocProvider.of<AuthBloc>(context).add(AuthWithEmailEvent(email: _emailController.text, password: _passwordController.text));
+                          },
                           width: 100,
                           height: 50,
                           text: "Вход",
@@ -91,6 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
               )),
         ),
       ),
-    );
+    ),
+);
   }
 }

@@ -30,6 +30,7 @@ class CustomTextField extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
           color: isError ? AppColors.errorColorTextField : AppColors.colorTextField),
       child: TextFormField(
+        //onSaved: (_) {FocusScope.of(context).requestFocus(FocusNode());},
         keyboardType: keyBoardType,
         style: isError ? AppTypography.font16f00 : AppTypography.font16fff,
         decoration: InputDecoration(

@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sound_machines/utils/constants.dart';
 
 import '../../../servise/auth_service.dart';
+
+enum AuthStatesEnum {wait, loading, logged, registered, fail, emailUsed}
 
 class AuthRepository {
   AuthRepository({required AuthService authService})
@@ -18,6 +22,7 @@ class AuthRepository {
       await method;
       authState.add(LoadingStateEnum.success);
     } catch (e) {
+      log(e.toString());
       authState.add(LoadingStateEnum.fail);
     }
   }

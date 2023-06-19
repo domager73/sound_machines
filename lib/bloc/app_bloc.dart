@@ -19,6 +19,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     on<AppSubscribe>(_subscribe);
     on<AppAuthEvent>(_onAuth);
     on<AppUnAuthEvent>(_onUnAuth);
+    on<LogoutEvent>(_onLogout);
   }
 
   _subscribe(AppSubscribe e, emit) {
@@ -27,6 +28,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       if (event == AppAuthStateEnum.unauth) add(AppUnAuthEvent());
     });
   }
+
+  _onLogout(LogoutEvent event, emit) => _appRepository.logout();
 
   _onAuth(AppAuthEvent event, emit) => emit(AppAuthState());
 

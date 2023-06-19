@@ -119,9 +119,12 @@ class HomePage extends StatelessWidget {
         child: BlocBuilder<AppBloc, AppState>(
           builder: (context, state) {
             if (state is AppAuthState) {
-              return const Text(
-                'Ты лох',
-                style: TextStyle(color: Colors.white),
+              return TextButton(
+                onPressed: () {BlocProvider.of<AppBloc>(context).add(LogoutEvent());},
+                child: const Text(
+                  'Выйти',
+                  style: TextStyle(color: Colors.white),
+                ),
               );
             } else {
               return const WelcomeScreen();
