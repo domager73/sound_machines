@@ -4,3 +4,9 @@ part of 'auth_bloc.dart';
 abstract class AuthState {}
 
 class AuthInitial extends AuthState {}
+
+class AuthLoadingState extends AuthState {}
+
+class AuthSuccessState extends AuthState {}
+
+class AuthFailState extends AuthState {}

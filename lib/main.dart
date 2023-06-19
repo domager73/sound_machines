@@ -2,6 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:sound_machines/app_repository.dart';
+import 'package:sound_machines/feature/auth/bloc/auth_bloc.dart';
+import 'package:sound_machines/feature/auth/data/auth_repository.dart';
+import 'package:sound_machines/servise/auth_service.dart';
 import 'package:sound_machines/servise/custom_bloc_observer.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,9 +14,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'bloc/app_bloc.dart';
 import 'firebase_options.dart';
-
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,22 +26,34 @@ Future<void> main() async {
   runApp(MyRepositoryProviders());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Brain Wave',
+      title: 'Sound machine',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: GoogleFonts.ubuntu().fontFamily,
         canvasColor: const Color(0xff292B57),
       ),
       color: const Color(0xff292B57),
-      routes: {
-
-      },
+      routes: {},
       home: const HomePage(),
     );
   }
@@ -45,20 +61,16 @@ class MyApp extends StatelessWidget {
 
 class MyRepositoryProviders extends StatelessWidget {
   MyRepositoryProviders({Key? key}) : super(key: key);
-  final firebaseAuth = FirebaseAuthService();
-  final apiService = ApiService(firestore: FirebaseFirestore.instance);
-  final chatCore = FirebaseChatCore.instance;
+
+  final authService = AuthService();
+
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(providers: [
       RepositoryProvider(
-          create: (_) => AppRepository(firebaseAuthService: firebaseAuth, chatCore: chatCore)),
+          create: (_) => AppRepository(authService: authService)..checkAuth()),
       RepositoryProvider(
-          create: (_) => ProfileRepository(apiService: apiService)),
-      RepositoryProvider(create: (_) => NewsRepository(apiService: apiService)),
-      RepositoryProvider(create: (_) => ChatRepository()),
-      RepositoryProvider(create: (_) => NeuronsRepository(apiService: apiService)),
-      RepositoryProvider(create: (_) => UserChatsRepository()),
+          create: (_) => AuthRepository(authService: authService))
     ], child: const MyBlocProviders());
   }
 }
@@ -69,7 +81,20 @@ class MyBlocProviders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(providers: [
-        ], child: const MyApp());
+      BlocProvider(
+        create: (_) => AuthBloc(
+            appRepository: RepositoryProvider.of<AppRepository>(context),
+            authRepository: RepositoryProvider.of<AuthRepository>(context))
+          ..add(AuthSubscribe()),
+        lazy: false,
+      ),
+      BlocProvider(
+        create: (_) => AppBloc(
+          appRepository: RepositoryProvider.of<AppRepository>(context),
+        )..add(AppSubscribe()),
+        lazy: false,
+      ),
+    ], child: MyApp());
   }
 }
 
@@ -78,20 +103,24 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AppBloc, AppState>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          log(state.toString());
-          if (state is AppAuthState) return const MainScreen();
-          if (state is AppUnAuthState) {
-            return Container(
-              child: Text(),
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        });
+    return Scaffold(
+      body: Center(
+        child: BlocBuilder<AppBloc, AppState>(
+          builder: (context, state) {
+            if (state is AppAuthState) {
+              return const Text(
+                'Ты лох',
+                style: TextStyle(color: Colors.white),
+              );
+            } else {
+              return const Text(
+                "login",
+                style: TextStyle(color: Colors.white),
+              );
+            }
+          },
+        ),
+      ),
+    );
   }
 }
