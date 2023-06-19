@@ -17,7 +17,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc(
       {required AppRepository appRepository,
-      required AuthRepository authRepository})
+        required AuthRepository authRepository})
       : _appRepository = appRepository,
         _authRepository = authRepository,
         super(AuthInitial()) {

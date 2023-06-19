@@ -31,10 +31,10 @@ class _RegisterFirstScreenState extends State<RegisterFirstScreen> {
         repository.setEmail(_emailController.text);
         Navigator.pushNamed(context, '/register_second_screen');
       }
-      else if(!repository.validateEmail(_emailController.text)){
+      if(!repository.validateEmail(_emailController.text)){
         isErrorEmail = true;
       }
-      else if(!repository.validateName(_namedController.text)){
+      if(!repository.validateName(_namedController.text)){
         isErrorName = true;
       }
       setState(() {});
