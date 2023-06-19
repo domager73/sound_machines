@@ -25,7 +25,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthWithGoogleEvent>(_onGoogle);
     on<AuthWithEmailEvent>(_onLoginWithEmail);
     on<RegisterWithEmailEvent>(_onRegisterWithEmail);
-
+    on<UsedEmailEvent>(_usedEmail);
     on<AuthLoadingEvent>(_onLoading);
     on<AuthSuccessEvent>(_onSuccess);
     on<AuthFailEvent>(_onFail);
@@ -33,9 +33,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   _subscribe(AuthSubscribe e, emit) {
     _authRepository.authState.stream.listen((event) {
-      if (event == LoadingStateEnum.success) add(AuthSuccessEvent());
-      if (event == LoadingStateEnum.fail) add(AuthFailEvent());
-      if (event == LoadingStateEnum.loading) add(AuthLoadingEvent());
+      if (event == AuthStatesEnum.success) add(AuthSuccessEvent());
+      if (event == AuthStatesEnum.fail) add(AuthFailEvent());
+      if (event == AuthStatesEnum.loading) add(AuthLoadingEvent());
+      if (event == AuthStatesEnum.emailUsed) add(UsedEmailEvent());
     });
   }
 
@@ -49,8 +50,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   _onRegisterWithEmail(RegisterWithEmailEvent event, emit) {
-    _authRepository.registerWithEmailAndPassword(
-        email: event.email, password: event.password, name: event.name);
+    _authRepository.registerWithEmailAndPassword();
   }
 
   _onLoading(AuthLoadingEvent event, emit) => emit(AuthLoadingState());
@@ -63,5 +63,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   _onFail(AuthFailEvent event, emit) {
     emit(AuthFailState());
     _appRepository.setUnAuth();
+  }
+
+  _usedEmail (UsedEmailEvent event, emit) {
+    emit(InvalidEmailState());
   }
 }

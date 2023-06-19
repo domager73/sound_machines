@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:sound_machines/utils/colors.dart';
 import 'package:sound_machines/utils/fonts.dart';
 import 'package:sound_machines/widgets/buttons/custom_elevated_button.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../widgets/text_field/custom_text_field.dart';
+import '../data/auth_repository.dart';
 
 class RegisterFirstScreen extends StatefulWidget {
   const RegisterFirstScreen({Key? key}) : super(key: key);
@@ -15,10 +17,29 @@ class RegisterFirstScreen extends StatefulWidget {
 class _RegisterFirstScreenState extends State<RegisterFirstScreen> {
   final _emailController = TextEditingController();
   final _namedController = TextEditingController();
-  final isError = false;
+  bool isErrorEmail = false;
+  bool isErrorName = false;
 
   @override
   Widget build(BuildContext context) {
+    final repository = RepositoryProvider.of<AuthRepository>(context);
+
+    void checkvalidField() {
+      if (repository.validateEmail(_emailController.text) &&
+          repository.validateName(_namedController.text)) {
+        repository.setName(_namedController.text);
+        repository.setEmail(_emailController.text);
+        Navigator.pushNamed(context, '/register_second_screen');
+      }
+      else if(!repository.validateEmail(_emailController.text)){
+        isErrorEmail = true;
+      }
+      else if(!repository.validateName(_namedController.text)){
+        isErrorName = true;
+      }
+      setState(() {});
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -49,7 +70,7 @@ class _RegisterFirstScreenState extends State<RegisterFirstScreen> {
                   ),
                   CustomTextField(
                     controller: _emailController,
-                    isError: isError,
+                    isError: isErrorEmail,
                     height: 50,
                     width: MediaQuery.of(context).size.width * 0.9,
                   ),
@@ -68,7 +89,7 @@ class _RegisterFirstScreenState extends State<RegisterFirstScreen> {
                   ),
                   CustomTextField(
                     controller: _namedController,
-                    isError: isError,
+                    isError: isErrorName,
                     height: 50,
                     width: MediaQuery.of(context).size.width * 0.9,
                   ),
@@ -78,12 +99,12 @@ class _RegisterFirstScreenState extends State<RegisterFirstScreen> {
                     children: [
                       CustomElevatedButton(
                           callback: () {
-                            Navigator.pushNamed(context, '/register_second_screen');
+                            checkvalidField();
                           },
                           width: 135,
                           height: 50,
                           text: "Продолжить",
-                          color: isError ? AppColors.errorColorTextField : AppColors.colorTextField,
+                          color: isErrorEmail || isErrorName ? AppColors.errorColorTextField : AppColors.colorTextField,
                           borderRadius: 20,
                           border: Border.all(color: Colors.transparent)),
                     ],

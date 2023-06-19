@@ -93,6 +93,7 @@ class AuthService {
         log('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
         log('The account already exists for that email.');
+        rethrow;
       }
     } catch (e) {
       log(e.toString());
