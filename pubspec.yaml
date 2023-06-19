@@ -40,9 +40,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  cupertino_icons: ^1.0.2
-  firebase_core: ^2.13.0
-  firebase_auth: ^4.6.1
+  cupertino_icons: any
+  firebase_core: ^2.14.0
+  firebase_auth: ^4.6.3
   flutter_bloc: ^8.1.3
   bloc: ^8.1.2
   shared_preferences: ^2.1.1
