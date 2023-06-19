@@ -2,6 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:sound_machines/app_repository.dart';
+import 'package:sound_machines/feature/auth/bloc/auth_bloc.dart';
+import 'package:sound_machines/feature/auth/data/auth_repository.dart';
+import 'package:sound_machines/servise/auth_service.dart';
 import 'package:sound_machines/feature/auth/ui/login_screen.dart';
 import 'package:sound_machines/feature/auth/ui/welcome_screen.dart';
 import 'package:sound_machines/servise/custom_bloc_observer.dart';
@@ -13,7 +18,10 @@ import 'package:sound_machines/utils/colors.dart';
 
 import 'feature/auth/bloc/auth_bloc.dart';
 import 'feature/auth/data/auth_repository.dart';
+import 'bloc/app_bloc.dart';
 import 'firebase_options.dart';
+
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,16 +56,14 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: GoogleFonts.ubuntu().fontFamily,
-        canvasColor: const Color(0xff292B57),
+        canvasColor: AppColors.blackColor,
       ),
       color: const Color(0xff292B57),
-      routes: {},
-      home: const HomePage(),
       routes: {
         '/welcome_screen' : (context) => const WelcomeScreen(),
         '/login_screen' : (context) => const LoginScreen(),
       },
-      home: const WelcomeScreen(),
+      home: const HomePage(),
     );
   }
 }
@@ -116,10 +122,7 @@ class HomePage extends StatelessWidget {
                 style: TextStyle(color: Colors.white),
               );
             } else {
-              return const Text(
-                "login",
-                style: TextStyle(color: Colors.white),
-              );
+              return const WelcomeScreen();
             }
           },
         ),

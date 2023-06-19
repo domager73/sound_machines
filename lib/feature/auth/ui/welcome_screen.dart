@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sound_machines/feature/auth/bloc/auth_bloc.dart';
 import 'package:sound_machines/utils/fonts.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../utils/colors.dart';
 import '../../../widgets/buttons/custom_elevated_button.dart';
@@ -21,7 +23,7 @@ class WelcomeScreen extends StatelessWidget {
                     width: 50,
                     height: 50,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   SizedBox(
@@ -32,7 +34,7 @@ class WelcomeScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   CustomElevatedButton(
@@ -45,11 +47,14 @@ class WelcomeScreen extends StatelessWidget {
                     height: 40,
                     width: MediaQuery.of(context).size.width * 0.8,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   CustomElevatedButton(
-                    callback: () {},
+                    callback: () {
+                      BlocProvider.of<AuthBloc>(context)
+                          .add(AuthWithGoogleEvent());
+                    },
                     text: 'Войти через Google',
                     styleText: AppTypography.font16fff,
                     color: AppColors.blackColor,
@@ -58,7 +63,7 @@ class WelcomeScreen extends StatelessWidget {
                     height: 40,
                     width: MediaQuery.of(context).size.width * 0.8,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   CustomElevatedButton(
