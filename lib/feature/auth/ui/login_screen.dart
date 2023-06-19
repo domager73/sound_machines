@@ -14,6 +14,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
+  final isError = false;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   CustomTextField(
                     controller: _emailController,
-                    isError: false,
+                    isError: isError,
                     height: 50,
                     width: MediaQuery.of(context).size.width * 0.9,
                   ),
@@ -66,17 +67,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   CustomTextField(
                     controller: _emailController,
-                    isError: true,
+                    isError: isError,
                     height: 50,
                     width: MediaQuery.of(context).size.width * 0.9,
                   ),
-                  CustomElevatedButton(
-                      callback: () {},
-                      width: 100,
-                      height: 50,
-                      text: "Вход",
-                      color: AppColors.borderGrey,
-                      border: Border.all(color: Colors.transparent))
+                  const SizedBox(height: 45,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CustomElevatedButton(
+                          callback: () {},
+                          width: 100,
+                          height: 50,
+                          text: "Вход",
+                          color: isError ? AppColors.errorColorTextField : AppColors.colorTextField,
+                          borderRadius: 20,
+                          border: Border.all(color: Colors.transparent)),
+                    ],
+                  )
                 ],
               )),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sound_machines/utils/colors.dart';
 
 import '../../utils/fonts.dart';
 
@@ -27,7 +28,7 @@ class CustomTextField extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
-          color: isError ? Color(0xffD9D9D9) : Color(0xff414141)),
+          color: isError ? AppColors.errorColorTextField : AppColors.colorTextField),
       child: TextFormField(
         keyboardType: keyBoardType,
         style: isError ? AppTypography.font16f00 : AppTypography.font16fff,
