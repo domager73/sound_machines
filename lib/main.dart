@@ -6,8 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:sound_machines/app_repository.dart';
 import 'package:sound_machines/feature/auth/bloc/auth_bloc.dart';
 import 'package:sound_machines/feature/auth/data/auth_repository.dart';
-import 'package:sound_machines/servise/auth_service.dart';
 import 'package:sound_machines/feature/auth/ui/login_screen.dart';
+import 'package:sound_machines/feature/auth/ui/registration_second_screen.dart';
+import 'package:sound_machines/servise/auth_service.dart';
 import 'package:sound_machines/feature/auth/ui/welcome_screen.dart';
 import 'package:sound_machines/servise/custom_bloc_observer.dart';
 import 'package:bloc/bloc.dart';
@@ -16,9 +17,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sound_machines/utils/colors.dart';
 
-import 'feature/auth/bloc/auth_bloc.dart';
-import 'feature/auth/data/auth_repository.dart';
 import 'bloc/app_bloc.dart';
+import 'feature/auth/ui/registration_first_screen.dart';
 import 'firebase_options.dart';
 
 
@@ -62,6 +62,8 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/welcome_screen' : (context) => const WelcomeScreen(),
         '/login_screen' : (context) => const LoginScreen(),
+        '/register_first_screen' : (context) => const RegisterFirstScreen(),
+        '/register_second_screen' : (context) => const RegisterSecondScreen(),
       },
       home: const HomePage(),
     );

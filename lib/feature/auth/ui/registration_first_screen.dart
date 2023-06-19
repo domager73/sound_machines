@@ -5,22 +5,24 @@ import 'package:sound_machines/widgets/buttons/custom_elevated_button.dart';
 
 import '../../../widgets/text_field/custom_text_field.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class RegisterFirstScreen extends StatefulWidget {
+  const RegisterFirstScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterFirstScreen> createState() => _RegisterFirstScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterFirstScreenState extends State<RegisterFirstScreen> {
   final _emailController = TextEditingController();
+  final _namedController = TextEditingController();
+  final isError = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Вход',
+          'Регестрация',
           style: AppTypography.font20fff,
         ),
         centerTitle: true,
@@ -28,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.05, 10, MediaQuery.of(context).size.width * 0.05, 10),
           child: Align(
               alignment: Alignment.topLeft,
               child: Column(
@@ -47,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   CustomTextField(
                     controller: _emailController,
-                    isError: false,
+                    isError: isError,
                     height: 50,
                     width: MediaQuery.of(context).size.width * 0.9,
                   ),
@@ -57,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: const Text(
-                      'Пароль',
+                      'Никнейм',
                       style: AppTypography.font25fff,
                     ),
                   ),
@@ -65,18 +67,27 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 8,
                   ),
                   CustomTextField(
-                    controller: _emailController,
-                    isError: true,
+                    controller: _namedController,
+                    isError: isError,
                     height: 50,
                     width: MediaQuery.of(context).size.width * 0.9,
                   ),
-                  CustomElevatedButton(
-                      callback: () {},
-                      width: 100,
-                      height: 50,
-                      text: "Вход",
-                      color: AppColors.borderGrey,
-                      border: Border.all(color: Colors.transparent))
+                  const SizedBox(height: 45,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CustomElevatedButton(
+                          callback: () {
+                            Navigator.pushNamed(context, '/register_second_screen');
+                          },
+                          width: 135,
+                          height: 50,
+                          text: "Продолжить",
+                          color: isError ? AppColors.errorColorTextField : AppColors.colorTextField,
+                          borderRadius: 20,
+                          border: Border.all(color: Colors.transparent)),
+                    ],
+                  )
                 ],
               )),
         ),

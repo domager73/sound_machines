@@ -38,7 +38,9 @@ class WelcomeScreen extends StatelessWidget {
                     height: 20,
                   ),
                   CustomElevatedButton(
-                    callback: () {},
+                    callback: () {
+                      Navigator.pushNamed(context, '/register_first_screen');
+                    },
                     text: 'Зарегестрироваться',
                     styleText: AppTypography.font16000,
                     color: AppColors.greenButton,

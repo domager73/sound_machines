@@ -34,4 +34,8 @@ class AuthRepository {
   void loginWithEmailAndPassword(
           {required String email, required String password}) =>
       _authWith(_authService.sighInWithEmailAndPassword(email, password));
+
+  bool validatorPassword(String firstPassword, String secondPassword){
+    return firstPassword == secondPassword && firstPassword.length > 5;
+  }
 }
