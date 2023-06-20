@@ -111,8 +111,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 onChanged: (value) async {
                   final positionValue = Duration(seconds: value.toInt());
                   await audioPlayer.seek(positionValue);
-
-                  await audioPlayer.release();
                 },
               ),
               Padding(
