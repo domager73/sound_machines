@@ -1,12 +1,12 @@
 part of 'player_bloc.dart';
 
 @immutable
-abstract class PlayerState {}
+abstract class PlayerBlocState {}
 
-class PlayerInitial extends PlayerState {}
+class PlayerInitial extends PlayerBlocState {}
 
-class TrackLoadedState extends PlayerState {}
+class TrackLoadedState extends PlayerBlocState {}
 
-class PlayerLoadingState extends PlayerState {}
+class PlayerLoadingState extends PlayerBlocState {}
 
-class TrackLoadFailState extends PlayerState {}
+class TrackLoadFailState extends PlayerBlocState {}

@@ -8,6 +8,7 @@ import 'package:sound_machines/feature/auth/bloc/auth_bloc.dart';
 import 'package:sound_machines/feature/auth/data/auth_repository.dart';
 import 'package:sound_machines/feature/auth/ui/login_screen.dart';
 import 'package:sound_machines/feature/auth/ui/registration_second_screen.dart';
+import 'package:sound_machines/feature/player/repository/player_repository.dart';
 import 'package:sound_machines/servise/auth_service.dart';
 import 'package:sound_machines/feature/auth/ui/welcome_screen.dart';
 import 'package:sound_machines/servise/custom_bloc_observer.dart';
@@ -20,6 +21,7 @@ import 'package:sound_machines/utils/colors.dart';
 
 import 'bloc/app_bloc.dart';
 import 'feature/auth/ui/registration_first_screen.dart';
+import 'feature/player/bloc/player_bloc.dart';
 import 'feature/player/ui/player_screen.dart';
 import 'firebase_options.dart';
 
@@ -76,7 +78,7 @@ class MyRepositoryProviders extends StatelessWidget {
   MyRepositoryProviders({Key? key}) : super(key: key);
 
   final authService = AuthService();
-  final musicService = MusicService()..getLastTrack();
+  final musicService = MusicService();
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +86,9 @@ class MyRepositoryProviders extends StatelessWidget {
       RepositoryProvider(
           create: (_) => AppRepository(authService: authService)..checkAuth()),
       RepositoryProvider(
-          create: (_) => AuthRepository(authService: authService))
+          create: (_) => AuthRepository(authService: authService)),
+      RepositoryProvider(
+          create: (_) => PlayerRepository(musicService: musicService))
     ], child: const MyBlocProviders());
   }
 }
@@ -106,6 +110,12 @@ class MyBlocProviders extends StatelessWidget {
         create: (_) => AppBloc(
           appRepository: RepositoryProvider.of<AppRepository>(context),
         )..add(AppSubscribe()),
+        lazy: false,
+      ),
+      BlocProvider(
+        create: (_) => PlayerBloc(
+          playerRepository: RepositoryProvider.of<PlayerRepository>(context),
+        )..add(PlayerSubscribe()),
         lazy: false,
       ),
     ], child: MyApp());

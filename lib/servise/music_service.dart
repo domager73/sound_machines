@@ -51,10 +51,14 @@ class MusicService {
     return Track(name: trackData['name'], audioUrl: trackData['audioUrl'], imageUrl: trackData['imageUrl']);
   }
 
-  void getTracks() async {
-    final doc = await firestore.collection('musics').get();
-    doc.docs.forEach((element) {
-      print(element['url']);
-    });
+  Future<List<Track>> getAllTracks() async {
+    final collection = await firestore.collection('musics').get();
+    List<Track> tracks = [];
+
+    for (var i in collection.docs) {
+      tracks.add(Track(name: i.data()['name'], audioUrl: i.data()['audioUrl'], imageUrl: i.data()['imageUrl']));
+    }
+
+    return tracks;
   }
 }

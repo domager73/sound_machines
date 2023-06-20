@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:html';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -11,7 +10,7 @@ part 'player_event.dart';
 
 part 'player_state.dart';
 
-class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
+class PlayerBloc extends Bloc<PlayerEvent, PlayerBlocState> {
   PlayerRepository playerRepository;
 
   PlayerBloc({required this.playerRepository}) : super(PlayerInitial()) {
