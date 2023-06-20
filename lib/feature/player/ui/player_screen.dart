@@ -15,6 +15,10 @@ class PlayerScreen extends StatefulWidget {
 
 class _PlayerScreenState extends State<PlayerScreen> {
   final audioPlayer = AudioPlayer();
+
+  String sours =
+      'https://sound-pack.net/download/Sound_07024.mp3';
+
   bool isPlaying = false;
   Duration position = Duration.zero;
   Duration duration = Duration.zero;
@@ -51,6 +55,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   String formatTime(Duration duration) {
     String toDigits(int n) => n.toString().padLeft(2, '0');
+    audioPlayer.setSourceUrl(sours);
 
     final hours = toDigits(duration.inHours);
     final minutes = toDigits(duration.inMinutes);
@@ -127,12 +132,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
               InkWell(
                 onTap: () async {
                   if(isPlaying){
-                    await audioPlayer.stop();
+                    await audioPlayer.pause();
                   }
                   else{
-                    String sours =
-                        'https://sound-pack.net/download/Sound_07024.mp3';
-                    await audioPlayer.play(UrlSource(sours));
+                    await audioPlayer.resume();
                   }
 
                   isPlaying = !isPlaying;
