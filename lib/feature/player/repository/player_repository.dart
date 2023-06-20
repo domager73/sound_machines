@@ -1,11 +1,13 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:sound_machines/utils/constants.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 import '../../../models/track.dart';
 import '../../../servise/music_service.dart';
 
 class PlayerRepository {
   final MusicService musicService;
+  final audioPlayer = AudioPlayer();
 
   PlayerRepository({required this.musicService});
 
@@ -33,6 +35,7 @@ class PlayerRepository {
     print(currentTrack);
     print(queue?.length);
     print(trackData?.name);
+    audioPlayer.setSource(UrlSource(trackData!.audioUrl));
     trackDataLoadingState.add(LoadingStateEnum.success);
   }
   void previousTrack() {
@@ -44,6 +47,7 @@ class PlayerRepository {
       currentTrack = queue!.length - 1;
       trackData = queue?[currentTrack];
     }
+    audioPlayer.setSource(UrlSource(trackData!.audioUrl));
     trackDataLoadingState.add(LoadingStateEnum.success);
   }
 
@@ -53,7 +57,6 @@ class PlayerRepository {
       await loadQueue();
       trackData = queue?.first;
       trackDataLoadingState.add(LoadingStateEnum.success);
-
     } catch (e) {
       trackDataLoadingState.add(LoadingStateEnum.fail);
     }

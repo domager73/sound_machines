@@ -61,6 +61,7 @@ dev_dependencies:
   dropdown_button2: ^2.1.3
   just_audio: ^0.9.34
   audioplayers: ^4.1.0
+  iconify_flutter: ^0.0.5
 
   flutter_lints: ^2.0.0
   build_runner: ^2.4.5
@@ -73,5 +74,3 @@ flutter:
   uses-material-design: true
   assets:
     - Assets/
-    - Assets/image_not_found.jpg
-

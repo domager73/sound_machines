@@ -21,6 +21,7 @@ import 'package:sound_machines/utils/colors.dart';
 
 import 'bloc/app_bloc.dart';
 import 'feature/auth/ui/registration_first_screen.dart';
+import 'feature/main/ui/main_screen.dart';
 import 'feature/player/bloc/player_bloc.dart';
 import 'feature/player/ui/player_screen.dart';
 import 'firebase_options.dart';
@@ -132,7 +133,7 @@ class HomePage extends StatelessWidget {
         child: BlocBuilder<AppBloc, AppState>(
           builder: (context, state) {
             if (state is AppAuthState) {
-              return const PlayerScreen();
+              return const MainScreen();
             } else {
               return const WelcomeScreen();
             }

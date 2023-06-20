@@ -1,6 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,17 +8,18 @@ import 'package:sound_machines/feature/player/repository/player_repository.dart'
 import '../../utils/utils.dart';
 
 class CustomPlayer extends StatefulWidget {
-  CustomPlayer(
-      {super.key,
-      required this.name,
-      required this.audioUrl,
-      required this.imageUrl,
-      required this.audioPlayer});
+  CustomPlayer({
+    super.key,
+    required this.name,
+    required this.audioUrl,
+    required this.imageUrl,
+    required this.audioPlayer,
+  });
 
   String name;
   String audioUrl;
   String imageUrl;
-  final audioPlayer;
+  AudioPlayer audioPlayer;
 
   @override
   State<CustomPlayer> createState() => _CustomPlayerState();
@@ -33,7 +33,7 @@ class _CustomPlayerState extends State<CustomPlayer> {
   @override
   void initState() {
     super.initState();
-    widget.audioPlayer.play(UrlSource(widget.audioUrl));
+    widget.audioPlayer.setSource(UrlSource(widget.audioUrl));
     widget.audioPlayer.onPlayerStateChanged.listen((state) {
       setState(() {
         isPlaying = state == PlayerState.playing;
@@ -55,12 +55,6 @@ class _CustomPlayerState extends State<CustomPlayer> {
     });
   }
 
-  @override
-  void dispose() {
-    widget.audioPlayer.dispose();
-    super.dispose();
-  }
-
   String formatTime(Duration duration) {
     String toDigits(int n) => n.toString().padLeft(2, '0');
 
@@ -77,94 +71,148 @@ class _CustomPlayerState extends State<CustomPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image(
-              image: widget.imageUrl.isNotEmpty
-                  ? NetworkImage(widget.imageUrl)
-                  : const AssetImage('Assets/image_not_found.jpg')
-                      as ImageProvider,
-              width: MediaQuery.of(context).size.height,
-              height: 300,
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            Text(widget.name,
-                textAlign: TextAlign.center, style: AppTypography.font32fff),
-            Column(
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: <Color>[Colors.amber, Colors.black]),
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Slider(
-                  min: 0,
-                  max: duration.inSeconds.toDouble(),
-                  value: position.inSeconds.toDouble(),
-                  onChanged: (value) async {
-                    final positionValue = Duration(seconds: value.toInt());
-                    await widget.audioPlayer.seek(positionValue);
-                  },
+                Image(
+                  image: widget.imageUrl.isNotEmpty
+                      ? NetworkImage(widget.imageUrl)
+                      : const AssetImage('Assets/image_not_found.jpg')
+                          as ImageProvider,
+                  width: MediaQuery.of(context).size.height,
+                  height: 300,
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(widget.name,
+                    textAlign: TextAlign.center,
+                    style: AppTypography.font32fff),
+                Column(
+                  children: [
+                    Slider(
+                      min: 0,
+                      max: duration.inSeconds.toDouble(),
+                      value: position.inSeconds.toDouble(),
+                      onChanged: (value) async {
+                        final positionValue = Duration(seconds: value.toInt());
+                        await widget.audioPlayer.seek(positionValue);
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            formatTime(position),
+                            style: AppTypography.font16fff,
+                          ),
+                          Text(formatTime(duration),
+                              style: AppTypography.font16fff),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.fromLTRB(8, 50, 8, 50),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text(
-                        formatTime(position),
-                        style: AppTypography.font16fff,
+                      InkWell(
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        ),
+                        onTap: () {},
                       ),
-                      Text(formatTime(duration),
-                          style: AppTypography.font16fff),
+                      InkWell(
+                        onTap: () async {
+                          RepositoryProvider.of<PlayerRepository>(context)
+                              .previousTrack();
+                        },
+                        child: const Icon(
+                          Icons.skip_previous,
+                          size: 50,
+                          color: Colors.white,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          isPlaying
+                              ? await widget.audioPlayer.pause()
+                              : await widget.audioPlayer.resume();
+
+                          isPlaying = !isPlaying;
+                        },
+                        child: Icon(
+                          isPlaying ? Icons.pause : Icons.play_arrow_rounded,
+                          size: 50,
+                          color: Colors.white,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          RepositoryProvider.of<PlayerRepository>(context)
+                              .nextTrack();
+                        },
+                        child: const Icon(
+                          Icons.skip_next,
+                          size: 50,
+                          color: Colors.white,
+                        ),
+                      ),
+                      InkWell(
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        ),
+                        onTap: () {},
+                      ),
                     ],
                   ),
                 ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(40, 25, 40, 15),
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        ),
+                        onTap: () {},
+                      ),
+                      InkWell(
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        ),
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                InkWell(
-                  onTap: () async {
-                    RepositoryProvider.of<PlayerRepository>(context)
-                        .previousTrack();
-                  },
-                  child: const Icon(
-                    Icons.skip_previous,
-                    size: 50,
-                    color: Colors.white,
-                  ),
-                ),
-                InkWell(
-                  onTap: () async {
-                    isPlaying
-                        ? await widget.audioPlayer.pause()
-                        : await widget.audioPlayer.resume();
-
-                    isPlaying = !isPlaying;
-                  },
-                  child: Icon(
-                    isPlaying ? Icons.pause : Icons.play_arrow_rounded,
-                    size: 50,
-                    color: Colors.white,
-                  ),
-                ),
-                InkWell(
-                  onTap: () async {
-                    RepositoryProvider.of<PlayerRepository>(context)
-                        .nextTrack();
-                  },
-                  child: const Icon(
-                    Icons.skip_next,
-                    size: 50,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            )
-          ],
+          ),
         ),
       ),
     );

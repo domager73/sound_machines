@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
-import 'package:sound_machines/utils/fonts.dart';
 import 'package:sound_machines/widgets/players/player.dart';
 
 import '../../../bloc/app_bloc.dart';
-import '../../../utils/colors.dart';
 import '../bloc/player_bloc.dart';
 
 class PlayerScreen extends StatelessWidget {
@@ -21,7 +18,8 @@ class PlayerScreen extends StatelessWidget {
         if (state is TrackLoadedState) {
           return Scaffold(
             appBar: AppBar(
-              backgroundColor: AppColors.snackBarBackgroundColor,
+              elevation: 0,
+              backgroundColor: Colors.amber,
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -37,7 +35,7 @@ class PlayerScreen extends StatelessWidget {
                 ],
               ),
             ),
-            body: CustomPlayer(name: repository.trackData!.name, imageUrl: repository.trackData!.imageUrl, audioUrl: repository.trackData!.audioUrl, audioPlayer: AudioPlayer(),)
+            body: CustomPlayer(name: repository.trackData!.name, imageUrl: repository.trackData!.imageUrl, audioUrl: repository.trackData!.audioUrl, audioPlayer: repository.audioPlayer,)
           );
         }
         else  {
