@@ -15,6 +15,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sound_machines/servise/music_service.dart';
 import 'package:sound_machines/utils/colors.dart';
 
 import 'bloc/app_bloc.dart';
@@ -74,6 +75,7 @@ class MyRepositoryProviders extends StatelessWidget {
   MyRepositoryProviders({Key? key}) : super(key: key);
 
   final authService = AuthService();
+  final musicService = MusicService()..getLastTrack();
 
   @override
   Widget build(BuildContext context) {
