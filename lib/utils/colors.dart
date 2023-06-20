@@ -6,4 +6,6 @@ abstract class AppColors {
   static const borderGrey = Colors.grey;
   static const errorColorTextField = Color(0xffD9D9D9);
   static const colorTextField = Color(0xff414141);
+  static const snackBarBackgroundColor = Color(0xff4D4D4D);
+  static const snackBarTextColor = Color(0xff828282);
 }

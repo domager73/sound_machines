@@ -5,6 +5,7 @@ import 'package:sound_machines/utils/fonts.dart';
 import 'package:sound_machines/widgets/buttons/custom_elevated_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../widgets/snackbar/custom_snackbar.dart';
 import '../../../widgets/text_field/custom_text_field.dart';
 import '../../../widgets/text_field/password_text_field.dart';
 import '../bloc/auth_bloc.dart';
@@ -32,10 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
     if (state is AuthLoadingState) {
       Dialogs.showModal(context, const Center(child: CircularProgressIndicator()));
     }
-
     if (state is AuthFailState) {
       Dialogs.hide(context);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Проблемс')));
+      CustomSnackBar.showSnackBar(context, "Проблемс");
     }
   },
   child: Scaffold(

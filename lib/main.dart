@@ -19,6 +19,7 @@ import 'package:sound_machines/utils/colors.dart';
 
 import 'bloc/app_bloc.dart';
 import 'feature/auth/ui/registration_first_screen.dart';
+import 'feature/player/ui/player_screen.dart';
 import 'firebase_options.dart';
 
 
@@ -119,13 +120,7 @@ class HomePage extends StatelessWidget {
         child: BlocBuilder<AppBloc, AppState>(
           builder: (context, state) {
             if (state is AppAuthState) {
-              return TextButton(
-                onPressed: () {BlocProvider.of<AppBloc>(context).add(LogoutEvent());},
-                child: const Text(
-                  'Выйти',
-                  style: TextStyle(color: Colors.white),
-                ),
-              );
+              return const PlayerScreen();
             } else {
               return const WelcomeScreen();
             }
