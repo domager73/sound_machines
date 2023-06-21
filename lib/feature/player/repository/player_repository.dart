@@ -35,7 +35,9 @@ class PlayerRepository {
     print(currentTrack);
     print(queue?.length);
     print(trackData?.name);
+
     audioPlayer.setSource(UrlSource(trackData!.audioUrl));
+
     trackDataLoadingState.add(LoadingStateEnum.success);
   }
   void previousTrack() {

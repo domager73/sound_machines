@@ -8,4 +8,5 @@ abstract class AppColors {
   static const colorTextField = Color(0xff414141);
   static const snackBarBackgroundColor = Color(0xff4D4D4D);
   static const snackBarTextColor = Color(0xff828282);
+  static const playerBackgroundColor = Color(0xff60480C);
 }

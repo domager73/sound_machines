@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:sound_machines/feature/player/ui/player_screen.dart';
 import 'package:sound_machines/utils/fonts.dart';
 
+import '../../../utils/colors.dart';
+import '../../playlist.dart/ui/playlist_screen.dart';
+
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
 
@@ -11,7 +14,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final List<Widget> _widgetOptions = <Widget>[
-    const Text('asdfasdf'),
+    const PlayListScreen(),
     const Text('asdfasdf')
   ];
 
@@ -33,44 +36,55 @@ class _MainScreenState extends State<MainScreen> {
             _widgetOptions[_selectedTab],
             Align(
               alignment: Alignment.bottomCenter,
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).push(_createRoute());
-                },
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.transparent,
-                  ),
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width,
-                  height: 50,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const InkWell(
-                          child: Icon(Icons.heart_broken_outlined,
-                              color: Colors.white),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: AppColors.playerBackgroundColor,
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                width: MediaQuery.of(context).size.width,
+                height: 60,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        child: Row(
+                          children: [
+                            const Image(
+                              image: AssetImage('Assets/image_not_found.jpg'),
+                              height: 50,
+                              width: 50,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(left: 10),
+                              width: MediaQuery.of(context).size.width - 160,
+                              child: const Text(
+                                'name',
+                                style: AppTypography.font20fff,
+                              ),
+                            ),
+                          ],
                         ),
-                        Container(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width - 80,
-                          child: const Text(
-                            'name',
-                            style: AppTypography.font20fff,
-                          ),
+                        onTap: () {
+                          Navigator.of(context).push(_createRoute());
+                        },
+                      ),
+                      const InkWell(
+                        child: Icon(
+                          Icons.heart_broken_outlined,
+                          color: Colors.white,
+                          size: 25,
                         ),
-                        const InkWell(
-                          child: Icon(Icons.play_arrow, color: Colors.white),
+                      ),
+                      const InkWell(
+                        child: Icon(
+                            Icons.play_arrow, color: Colors.white,
+                          size: 30,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -78,22 +92,19 @@ class _MainScreenState extends State<MainScreen> {
           ],
         ),
         bottomNavigationBar: ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(15.0),
-            topRight: Radius.circular(15.0),
-          ),
           child: BottomNavigationBar(
+            iconSize: 30,
             type: BottomNavigationBarType.fixed,
             currentIndex: _selectedTab,
             items: const [
               BottomNavigationBarItem(
-                icon: Icon(Icons.newspaper_outlined),
-                activeIcon: Icon(Icons.newspaper),
+                icon: Icon(Icons.add_home_outlined, color: Colors.white),
+                activeIcon: Icon(Icons.add_home, color: Colors.white,),
                 label: '',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.newspaper_outlined),
-                activeIcon: Icon(Icons.newspaper),
+                icon: Icon(Icons.search, color: Colors.white,),
+                activeIcon: Icon(Icons.search, color: Colors.white),
                 label: '',
               ),
             ],
@@ -108,8 +119,8 @@ class _MainScreenState extends State<MainScreen> {
 
 Route _createRoute() {
   return PageRouteBuilder(
-    pageBuilder: (context, animation,
-        secondaryAnimation) => const PlayerScreen(),
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        const PlayerScreen(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;
@@ -124,4 +135,3 @@ Route _createRoute() {
     },
   );
 }
-
