@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sound_machines/feature/player/repository/player_repository.dart';
 
 import '../../feature/player/ui/player_screen.dart';
 import '../../models/track.dart';
@@ -17,6 +19,7 @@ class StaticPLayer extends StatefulWidget {
 class _StaticPLayerState extends State<StaticPLayer> {
   @override
   Widget build(BuildContext context) {
+    final repository = RepositoryProvider.of<PlayerRepository>(context);
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -66,9 +69,18 @@ class _StaticPLayerState extends State<StaticPLayer> {
                 ),
               ),
               InkWell(
-                onTap: () {},
-                child: const Icon(
-                  Icons.play_arrow,
+                onTap: () async {
+                  repository.trackData!.isPlay
+                      ? await repository.audioPlayer.pause()
+                      : await repository.audioPlayer.resume();
+
+                  repository.trackData!.setIsPlay(!repository.trackData!.isPlay);
+
+                  setState(() {
+                  });
+                },
+                child: Icon(
+                  repository.trackData!.isPlay ? Icons.pause : Icons.play_arrow,
                   color: Colors.white,
                   size: 30,
                 ),
@@ -84,7 +96,7 @@ class _StaticPLayerState extends State<StaticPLayer> {
 Route _createRoute() {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) =>
-    const PlayerScreen(),
+        const PlayerScreen(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;

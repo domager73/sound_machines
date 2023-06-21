@@ -72,6 +72,7 @@ class _MyAppState extends State<MyApp> {
         '/login_screen' : (context) => const LoginScreen(),
         '/register_first_screen' : (context) => const RegisterFirstScreen(),
         '/register_second_screen' : (context) => const RegisterSecondScreen(),
+        '/search_music' : (context) => const SearchScreen(),
       },
       home: const HomePage(),
     );
@@ -145,7 +146,6 @@ class HomePage extends StatelessWidget {
         child: BlocBuilder<AppBloc, AppState>(
           builder: (context, state) {
             if (state is AppAuthState) {
-              // return const MainScreen();
               return const MainScreen();
             } else {
               return const WelcomeScreen();

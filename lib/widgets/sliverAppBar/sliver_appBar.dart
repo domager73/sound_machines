@@ -6,11 +6,15 @@ import '../../utils/colors.dart';
 class AppBarWidget extends StatelessWidget {
   final String text;
   final String imagePath;
+  final bool isButtonPlay;
+  final double expandedHeight;
 
   const AppBarWidget({
     Key? key,
     required this.text,
     required this.imagePath,
+    required this.isButtonPlay,
+    required this.expandedHeight,
   }) : super(key: key);
 
   @override
@@ -22,10 +26,10 @@ class AppBarWidget extends StatelessWidget {
       ),
       backgroundColor: Colors.transparent,
       centerTitle: false,
-      expandedHeight: 350.0,
+      expandedHeight: expandedHeight,
       pinned: true,
       elevation: 0,
-      flexibleSpace: FlexibleSpaceBar(
+      flexibleSpace:FlexibleSpaceBar(
         collapseMode: CollapseMode.pin,
         background: Container(
           padding: const EdgeInsets.only(bottom: 15),
@@ -35,7 +39,7 @@ class AppBarWidget extends StatelessWidget {
               repeat: ImageRepeat.repeat
             ),
           ),
-          child: Column(
+          child: isButtonPlay ? Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Row(
@@ -57,9 +61,9 @@ class AppBarWidget extends StatelessWidget {
                 ],
               )
             ],
-          ),
+          ) : Container(),
         ),
-      ),
+      )
     );
   }
 }

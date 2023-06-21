@@ -23,21 +23,27 @@ class _PlayListScreenState extends State<PlayListScreen> {
           return Scaffold(
             body: CustomScrollView(
               slivers: <Widget>[
-                const AppBarWidget(
+                AppBarWidget(
                   text: 'Супер плейлист',
                   imagePath: 'Assets/obl_pllist.webp',
+                  isButtonPlay: true,
+                  expandedHeight: MediaQuery.of(context).size.height * 0.4,
                 ),
                 SliverFixedExtentList(
                   delegate: SliverChildListDelegate(repository.queue!
-                      .map((e) => SmallTrekScreen(track: e,)).toList()),
+                      .map((e) => SmallTrekScreen(
+                            track: e,
+                          ))
+                      .toList()),
                   itemExtent: 60,
                 ),
               ],
             ),
           );
-        }
-        else{
-          return const Center(child: CircularProgressIndicator(),);
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         }
       },
     );

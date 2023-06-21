@@ -5,7 +5,6 @@ import 'package:sound_machines/feature/search_screen/data/playlist_repository.da
 import 'package:sound_machines/widgets/sliverAppBar/sliver_playlistContainer.dart';
 
 import '../../../widgets/sliverAppBar/sliver_appBar.dart';
-import '../../../widgets/treck/small_treck.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -17,7 +16,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width * 0.475;
+    final width = MediaQuery.of(context).size.width * 0.5;
 
     final repository = RepositoryProvider.of<PlaylistRepository>(context);
     BlocProvider.of<PlaylistsCubit>(context).initialLoadPlaylists();
@@ -27,9 +26,11 @@ class _SearchScreenState extends State<SearchScreen> {
         return Scaffold(
           body: CustomScrollView(
             slivers: <Widget>[
-              const AppBarWidget(
+              AppBarWidget(
                 text: 'Spotity',
-                imagePath: 'Assets/spotify_img.png',
+                imagePath: 'Assets/image_not_found.jpg',
+                isButtonPlay: false,
+                expandedHeight: MediaQuery.of(context).size.height * 0.7,
               ),
               SliverGrid(
                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
@@ -38,15 +39,21 @@ class _SearchScreenState extends State<SearchScreen> {
                   mainAxisSpacing: 10.0,
                   crossAxisSpacing: 10.0,
                   childAspectRatio: 10.0,
-
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
-                    return  PlaylistWidget(playlist: repository.playlists![index]);
+                    return PlaylistWidget(
+                        playlist: repository.playlists![index]);
                   },
                   childCount: repository.playlists!.length,
                 ),
-              )
+              ),
+              SliverToBoxAdapter(
+                child: Container(
+                  height: 60,
+                  color: Colors.transparent,
+                ),
+              ),
             ],
           ),
         );

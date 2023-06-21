@@ -10,12 +10,7 @@ import '../../utils/utils.dart';
 class CustomPlayer extends StatefulWidget {
   CustomPlayer({
     super.key,
-    required this.name,
-    required this.imageUrl,
   });
-
-  String name;
-  String imageUrl;
 
   @override
   State<CustomPlayer> createState() => _CustomPlayerState();
@@ -44,14 +39,6 @@ class _CustomPlayerState extends State<CustomPlayer> {
   Widget build(BuildContext context) {
     final repository = RepositoryProvider.of<PlayerRepository>(context);
     bool isPlaying = repository.audioPlayer.state == PlayerState.playing;
-    void setZeroDuration() {
-      setState(() {
-        position = Duration.zero;
-        duration = Duration.zero;
-        prepared = false;
-        print(position.inSeconds);
-      });
-    }
 
     void nextTrack() async {
       await repository.audioPlayer.stop();
@@ -83,9 +70,6 @@ class _CustomPlayerState extends State<CustomPlayer> {
               prepared = false;
             }
 
-            widget.name = snapshot.data!.data.name;
-            widget.imageUrl = snapshot.data!.data.imageUrl;
-
             return Container(
               width: MediaQuery.of(context).size.width,
               decoration: const BoxDecoration(
@@ -102,8 +86,8 @@ class _CustomPlayerState extends State<CustomPlayer> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Image(
-                          image: widget.imageUrl.isNotEmpty
-                              ? NetworkImage(widget.imageUrl)
+                          image: snapshot.data!.data.imageUrl.isNotEmpty
+                              ? NetworkImage(snapshot.data!.data.imageUrl)
                               : const AssetImage('Assets/image_not_found.jpg')
                                   as ImageProvider,
                           width: MediaQuery.of(context).size.height,
@@ -112,7 +96,7 @@ class _CustomPlayerState extends State<CustomPlayer> {
                         const SizedBox(
                           height: 15,
                         ),
-                        Text(widget.name,
+                        Text(snapshot.data!.data.name,
                             textAlign: TextAlign.center,
                             style: AppTypography.font32fff),
                         Column(

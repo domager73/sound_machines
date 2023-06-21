@@ -7,6 +7,7 @@ import 'package:sound_machines/widgets/players/static_player.dart';
 
 import '../../../utils/colors.dart';
 import '../../playlist/ui/playlist_screen.dart';
+import '../../search_screen/ui/search_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final List<Widget> _widgetOptions = <Widget>[
     const PlayListScreen(),
-    const Text('asdfasdf')
+    const SearchScreen(),
   ];
 
   int _selectedTab = 0;

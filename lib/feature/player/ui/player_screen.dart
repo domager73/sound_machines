@@ -16,8 +16,6 @@ class PlayerScreen extends StatefulWidget {
 class _PlayerScreenState extends State<PlayerScreen> {
   @override
   Widget build(BuildContext context) {
-    //BlocProvider.of<PlayerBloc>(context).add(InitialLoadEvent());
-    final repository = RepositoryProvider.of<PlayerRepository>(context);
     return BlocBuilder<PlayerBloc, PlayerBlocState>(
       builder: (context, state) {
         if (state is TrackLoadedState) {
@@ -40,7 +38,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 ],
               ),
             ),
-            body: CustomPlayer(name: repository.trackData!.name, imageUrl: repository.trackData!.imageUrl)
+            body: CustomPlayer()
           );
         }
         else  {
