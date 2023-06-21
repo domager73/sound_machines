@@ -24,8 +24,8 @@ class _PlayListScreenState extends State<PlayListScreen> {
             body: CustomScrollView(
               slivers: <Widget>[
                 const AppBarWidget(
-                  text: 'Spotity',
-                  imagePath: 'Assets/spotify_img.png',
+                  text: 'Супер плейлист',
+                  imagePath: 'Assets/obl_pllist.webp',
                 ),
                 SliverFixedExtentList(
                   delegate: SliverChildListDelegate(repository.queue!

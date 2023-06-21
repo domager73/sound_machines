@@ -6,9 +6,14 @@ import 'package:sound_machines/widgets/players/player.dart';
 import '../../../bloc/app_bloc.dart';
 import '../bloc/player_bloc.dart';
 
-class PlayerScreen extends StatelessWidget {
+class PlayerScreen extends StatefulWidget {
   const PlayerScreen({super.key});
 
+  @override
+  State<PlayerScreen> createState() => _PlayerScreenState();
+}
+
+class _PlayerScreenState extends State<PlayerScreen> {
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<PlayerBloc>(context).add(InitialLoadEvent());
@@ -25,7 +30,6 @@ class PlayerScreen extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: () {
-
                       BlocProvider.of<AppBloc>(context).add(LogoutEvent());
                     },
                     child: const Text(

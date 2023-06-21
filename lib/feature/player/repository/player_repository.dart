@@ -42,7 +42,7 @@ class PlayerRepository {
       currentTrack = queue!.length - 1;
       trackData = queue?[currentTrack];
     }
-    audioPlayer.play(UrlSource(trackData!.audioUrl));;
+    audioPlayer.play(UrlSource(trackData!.audioUrl));
   }
 
   void initialLoad() async {
@@ -58,5 +58,13 @@ class PlayerRepository {
     } catch (e) {
       trackDataLoadingState.add(LoadingStateEnum.fail);
     }
+  }
+
+  void setTrack(Track track){
+    trackData = track;
+    audioPlayer.play(UrlSource(trackData!.audioUrl));
+    currentTrack = queue!.indexOf(track);
+    print(currentTrack);
+    print(trackData!.name);
   }
 }

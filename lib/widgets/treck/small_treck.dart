@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sound_machines/feature/player/repository/player_repository.dart';
 
 import '../../feature/player/ui/player_screen.dart';
 import '../../models/track.dart';
@@ -6,6 +8,7 @@ import '../../utils/fonts.dart';
 
 class SmallTrekScreen extends StatefulWidget {
   final Track track;
+
   const SmallTrekScreen({super.key, required this.track});
 
   @override
@@ -15,6 +18,7 @@ class SmallTrekScreen extends StatefulWidget {
 class _SmallTrekScreenState extends State<SmallTrekScreen> {
   @override
   Widget build(BuildContext context) {
+    final repository =RepositoryProvider.of<PlayerRepository>(context);
     return Container(
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -29,8 +33,11 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
             InkWell(
               child: Row(
                 children: [
-                  const Image(
-                    image: AssetImage('Assets/image_not_found.jpg'),
+                  Image(
+                    image: widget.track.imageUrl == ''
+                        ? const AssetImage('Assets/image_not_found.jpg')
+                            as ImageProvider
+                        : NetworkImage(widget.track.imageUrl),
                     height: 50,
                     width: 50,
                   ),
@@ -45,6 +52,10 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
                 ],
               ),
               onTap: () {
+                repository.setTrack(widget.track);
+                print('-------------------------------');
+                print(repository.trackData!.name);
+                print('-------------------------------');
                 Navigator.of(context).push(_createRoute());
               },
             ),
@@ -55,9 +66,12 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
                 size: 25,
               ),
             ),
-            const InkWell(
+            InkWell(
+              onTap: () {
+              },
               child: Icon(
-                Icons.play_arrow, color: Colors.white,
+                widget.track.isPlay ? Icons.pause : Icons.play_arrow,
+                color: Colors.white,
                 size: 30,
               ),
             ),
@@ -71,7 +85,7 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
 Route _createRoute() {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) =>
-    const PlayerScreen(),
+        const PlayerScreen(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;
@@ -86,4 +100,3 @@ Route _createRoute() {
     },
   );
 }
-

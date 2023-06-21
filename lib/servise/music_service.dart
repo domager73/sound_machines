@@ -48,7 +48,7 @@ class MusicService {
   Future<Track> getLastTrack() async {
     final collection = await firestore.collection('musics').get();
     final trackData = collection.docs.last.data();
-    return Track(name: trackData['name'], audioUrl: trackData['audioUrl'], imageUrl: trackData['imageUrl']);
+    return Track(name: trackData['name'], audioUrl: trackData['audioUrl'], imageUrl: trackData['imageUrl'], isPlay: false);
   }
 
   Future<List<Track>> getAllTracks() async {
@@ -56,7 +56,7 @@ class MusicService {
     List<Track> tracks = [];
 
     for (var i in collection.docs) {
-      tracks.add(Track(name: i.data()['name'], audioUrl: i.data()['audioUrl'], imageUrl: i.data()['imageUrl']));
+      tracks.add(Track(name: i.data()['name'], audioUrl: i.data()['audioUrl'], imageUrl: i.data()['imageUrl'], isPlay: false));
     }
 
     return tracks;

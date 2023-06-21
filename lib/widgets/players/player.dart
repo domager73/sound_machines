@@ -22,7 +22,6 @@ class CustomPlayer extends StatefulWidget {
 }
 
 class _CustomPlayerState extends State<CustomPlayer> {
-  bool isPlaying = false;
   Duration position = Duration.zero;
   Duration duration = Duration.zero;
   bool prepared = false;
@@ -67,7 +66,7 @@ class _CustomPlayerState extends State<CustomPlayer> {
 
     repository.audioPlayer.onDurationChanged.listen((event) {duration = event;  if (duration.inSeconds > 0) prepared = true;});
     repository.audioPlayer.onPlayerStateChanged.listen((event) {setState(() {
-      isPlaying = event == PlayerState.playing;
+      repository.trackData!.setIsPlay(event == PlayerState.playing);
     });});
 
     return StreamBuilder(
@@ -92,9 +91,7 @@ class _CustomPlayerState extends State<CustomPlayer> {
               prepared = false;
               nextTrack();
             }
-
           }
-
           return Container(
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
@@ -179,15 +176,15 @@ class _CustomPlayerState extends State<CustomPlayer> {
                             prepared
                                 ? InkWell(
                                     onTap: () async {
-                                      isPlaying
+                                      repository.trackData!.isPlay
                                           ? await repository.audioPlayer.pause()
                                           : await repository.audioPlayer
                                               .resume();
 
-                                      isPlaying = !isPlaying;
+                                      repository.trackData!.setIsPlay(repository.trackData!.isPlay);
                                     },
                                     child: Icon(
-                                      isPlaying
+                                      repository.trackData!.isPlay
                                           ? Icons.pause
                                           : Icons.play_arrow_rounded,
                                       size: 50,
