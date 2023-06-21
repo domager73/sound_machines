@@ -22,6 +22,7 @@ class CustomPlayer extends StatefulWidget {
 }
 
 class _CustomPlayerState extends State<CustomPlayer> {
+
   Duration position = Duration.zero;
   Duration duration = Duration.zero;
   bool prepared = false;
@@ -42,7 +43,7 @@ class _CustomPlayerState extends State<CustomPlayer> {
   @override
   Widget build(BuildContext context) {
     final repository = RepositoryProvider.of<PlayerRepository>(context);
-
+    bool isPlaying = repository.audioPlayer.state == PlayerState.playing;
     void setZeroDuration() {
       setState(() {
         position = Duration.zero;
@@ -54,199 +55,195 @@ class _CustomPlayerState extends State<CustomPlayer> {
 
     void nextTrack() async {
       await repository.audioPlayer.stop();
-      setZeroDuration();
       repository.nextTrack();
     }
 
     void previousTrack() async {
       await repository.audioPlayer.stop();
-      setZeroDuration();
       repository.previousTrack();
     }
 
-    repository.audioPlayer.onDurationChanged.listen((event) {
-      duration = event;
-      if (duration.inSeconds > 0) prepared = true;
-    });
     repository.audioPlayer.onPlayerStateChanged.listen((event) {
-      setState(() {
-        repository.trackData!.setIsPlay(event == PlayerState.playing);
-      });
+      if (event == PlayerState.completed) {
+        nextTrack();
+      }
+      isPlaying = event == PlayerState.playing;
     });
 
     return StreamBuilder(
-        stream: repository.audioPlayer.eventStream,
-        initialData: const AudioEvent(eventType: AudioEventType.duration),
-        builder: (context, snapshot) {
-          print(snapshot.data!.eventType);
-          if (snapshot.data!.eventType == AudioEventType.position) {
-            position = snapshot.data!.position ?? Duration.zero;
-          }
-          if (snapshot.data!.eventType == AudioEventType.prepared) {
-            widget.name = RepositoryProvider.of<PlayerRepository>(context)
-                .trackData!
-                .name;
-            widget.imageUrl = RepositoryProvider.of<PlayerRepository>(context)
-                .trackData!
-                .imageUrl;
-            print(prepared);
-          }
-          if (snapshot.data!.eventType == AudioEventType.complete) {
-            if (prepared) {
+        stream: repository.playerStream,
+        initialData: repository.trackStreamData,
+        builder: (context, snapshot)  {
+          if (snapshot.hasData && snapshot.data != null)  {
+            duration = snapshot.data!.timeData.duration;
+            position = snapshot.data!.timeData.position;
+            if (duration.inSeconds > 0) {
+              prepared = true;
+            } else {
               prepared = false;
-              nextTrack();
             }
-          }
-          return Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: <Color>[Colors.amber, Colors.black]),
-            ),
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Image(
-                        image: widget.imageUrl.isNotEmpty
-                            ? NetworkImage(widget.imageUrl)
-                            : const AssetImage('Assets/image_not_found.jpg')
-                                as ImageProvider,
-                        width: MediaQuery.of(context).size.height,
-                        height: 300,
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Text(widget.name,
-                          textAlign: TextAlign.center,
-                          style: AppTypography.font32fff),
-                      Column(
-                        children: [
-                          Slider(
-                            min: 0,
-                            max: duration.inSeconds.toDouble(),
-                            value: position.inSeconds.toDouble(),
-                            onChanged: (value) async {
-                              final positionValue =
-                                  Duration(seconds: value.toInt());
-                              await repository.audioPlayer.seek(positionValue);
-                            },
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  formatTime(position),
-                                  style: AppTypography.font16fff,
-                                ),
-                                Text(formatTime(duration),
-                                    style: AppTypography.font16fff),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 50, 8, 50),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            InkWell(
-                              child: Icon(
-                                Icons.add,
-                                color: Colors.white,
-                              ),
-                              onTap: () {},
-                            ),
-                            InkWell(
-                              onTap: () async {
-                                previousTrack();
-                              },
-                              child: const Icon(
-                                Icons.skip_previous,
-                                size: 50,
-                                color: Colors.white,
-                              ),
-                            ),
-                            prepared
-                                ? InkWell(
-                                    onTap: () async {
-                                      repository.trackData!.isPlay
-                                          ? await repository.audioPlayer.pause()
-                                          : await repository.audioPlayer
-                                              .resume();
 
-                                      repository.trackData!.setIsPlay(
-                                          repository.trackData!.isPlay);
-                                    },
-                                    child: Icon(
-                                      repository.trackData!.isPlay
-                                          ? Icons.pause
-                                          : Icons.play_arrow_rounded,
-                                      size: 50,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                : const Icon(Icons.offline_bolt),
-                            InkWell(
-                              onTap: () async {
-                                nextTrack();
-                              },
-                              child: const Icon(
-                                Icons.skip_next,
-                                size: 50,
-                                color: Colors.white,
-                              ),
-                            ),
-                            InkWell(
-                              child: Icon(
-                                Icons.add,
-                                color: Colors.white,
-                              ),
-                              onTap: () {},
-                            ),
-                          ],
+            widget.name = snapshot.data!.data.name;
+            widget.imageUrl = snapshot.data!.data.imageUrl;
+
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: <Color>[Colors.amber, Colors.black]),
+              ),
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Image(
+                          image: widget.imageUrl.isNotEmpty
+                              ? NetworkImage(widget.imageUrl)
+                              : const AssetImage('Assets/image_not_found.jpg')
+                                  as ImageProvider,
+                          width: MediaQuery.of(context).size.height,
+                          height: 300,
                         ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(40, 25, 40, 15),
-                        width: MediaQuery.of(context).size.width,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Text(widget.name,
+                            textAlign: TextAlign.center,
+                            style: AppTypography.font32fff),
+                        Column(
                           children: [
-                            InkWell(
-                              child: Icon(
-                                Icons.add,
-                                color: Colors.white,
-                              ),
-                              onTap: () {},
+                            Slider(
+                              min: 0,
+                              max: duration.inSeconds.toDouble(),
+                              value: position.inSeconds.toDouble(),
+                              onChanged: (value) async {
+                                final positionValue =
+                                    Duration(seconds: value.toInt());
+                                await repository.audioPlayer
+                                    .seek(positionValue);
+                              },
                             ),
-                            InkWell(
-                              child: Icon(
-                                Icons.add,
-                                color: Colors.white,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 15),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    formatTime(position),
+                                    style: AppTypography.font16fff,
+                                  ),
+                                  Text(formatTime(duration),
+                                      style: AppTypography.font16fff),
+                                ],
                               ),
-                              onTap: () {},
                             ),
                           ],
                         ),
-                      )
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(8, 50, 8, 50),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              InkWell(
+                                child: Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                ),
+                                onTap: () {},
+                              ),
+                              InkWell(
+                                onTap: () async {
+                                  previousTrack();
+                                },
+                                child: const Icon(
+                                  Icons.skip_previous,
+                                  size: 50,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              prepared
+                                  ? InkWell(
+                                      onTap: () async {
+                                        isPlaying
+                                            ? await repository.audioPlayer
+                                                .pause()
+                                            : await repository.audioPlayer
+                                                .resume();
+                                        setState(() {
+                                          isPlaying = !isPlaying;
+                                        });
+                                      },
+                                      child: Icon(
+                                        isPlaying
+                                            ? Icons.pause
+                                            : Icons.play_arrow_rounded,
+                                        size: 50,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Icon(Icons.offline_bolt),
+                              InkWell(
+                                onTap: () async {
+                                  nextTrack();
+                                },
+                                child: const Icon(
+                                  Icons.skip_next,
+                                  size: 50,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              InkWell(
+                                child: Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                ),
+                                onTap: () {},
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(40, 25, 40, 15),
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              InkWell(
+                                child: Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                ),
+                                onTap: () {},
+                              ),
+                              InkWell(
+                                child: Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                ),
+                                onTap: () {},
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
         });
   }
 }
