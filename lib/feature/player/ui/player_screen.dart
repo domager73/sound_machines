@@ -25,6 +25,7 @@ class PlayerScreen extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: () {
+
                       BlocProvider.of<AppBloc>(context).add(LogoutEvent());
                     },
                     child: const Text(
@@ -35,7 +36,7 @@ class PlayerScreen extends StatelessWidget {
                 ],
               ),
             ),
-            body: CustomPlayer(name: repository.trackData!.name, imageUrl: repository.trackData!.imageUrl, audioUrl: repository.trackData!.audioUrl, audioPlayer: repository.audioPlayer,)
+            body: CustomPlayer(name: repository.trackData!.name, imageUrl: repository.trackData!.imageUrl)
           );
         }
         else  {

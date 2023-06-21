@@ -7,13 +7,13 @@ import '../../../servise/music_service.dart';
 
 class PlayerRepository {
   final MusicService musicService;
-  final audioPlayer = AudioPlayer();
 
   PlayerRepository({required this.musicService});
 
   BehaviorSubject<LoadingStateEnum> trackDataLoadingState =
       BehaviorSubject<LoadingStateEnum>.seeded(LoadingStateEnum.wait);
 
+  AudioPlayer audioPlayer = AudioPlayer();
   Track? trackData;
   List<Track>? queue;
   int currentTrack = 0;
@@ -23,8 +23,7 @@ class PlayerRepository {
     queue = queue!.reversed.toList();
   }
 
-  void nextTrack() {
-    trackDataLoadingState.add(LoadingStateEnum.loading);
+  void nextTrack() async  {
     if (currentTrack < queue!.length - 1) {
       currentTrack += 1;
       trackData = queue?[currentTrack];
@@ -32,14 +31,10 @@ class PlayerRepository {
       currentTrack = 0;
       trackData = queue?[0];
     }
-    print(currentTrack);
-    print(queue?.length);
-    print(trackData?.name);
-    audioPlayer.setSource(UrlSource(trackData!.audioUrl));
-    trackDataLoadingState.add(LoadingStateEnum.success);
+    audioPlayer.play(UrlSource(trackData!.audioUrl));
   }
+
   void previousTrack() {
-    trackDataLoadingState.add(LoadingStateEnum.loading);
     if (currentTrack > 0) {
       currentTrack -= 1;
       trackData = queue?[currentTrack];
@@ -47,8 +42,7 @@ class PlayerRepository {
       currentTrack = queue!.length - 1;
       trackData = queue?[currentTrack];
     }
-    audioPlayer.setSource(UrlSource(trackData!.audioUrl));
-    trackDataLoadingState.add(LoadingStateEnum.success);
+    audioPlayer.play(UrlSource(trackData!.audioUrl));;
   }
 
   void initialLoad() async {
@@ -57,6 +51,10 @@ class PlayerRepository {
       await loadQueue();
       trackData = queue?.first;
       trackDataLoadingState.add(LoadingStateEnum.success);
+      audioPlayer.setSourceUrl(trackData!.audioUrl);
+      audioPlayer.eventStream.listen((event) {
+        print(event.eventType);
+      });
     } catch (e) {
       trackDataLoadingState.add(LoadingStateEnum.fail);
     }
