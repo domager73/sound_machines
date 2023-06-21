@@ -37,11 +37,16 @@ class _MainScreenState extends State<MainScreen> {
 
     return WillPopScope(
       child: Scaffold(
-        body: Stack(
-          children: [
-            _widgetOptions[_selectedTab],
-            repository.trackData != null ? StaticPLayer(track: repository.trackData!): Container(),
-          ],
+        body: StreamBuilder(
+          stream: repository.playerStream,
+          builder: (context, snapshot) {
+            return Stack(
+              children: [
+                _widgetOptions[_selectedTab],
+                repository.trackData != null ? StaticPLayer(track: repository.trackData!) : Container(),
+              ],
+            );
+          }
         ),
         bottomNavigationBar: ClipRRect(
           child: BottomNavigationBar(

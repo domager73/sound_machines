@@ -35,5 +35,5 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerBlocState> {
 
   _onSuccess(TrackLoadedEvent event, emit) => emit(TrackLoadedState());
 
-  _onFail(TrackLoadFailEVent event, emit) => emit(TrackLoadFailState);
+  _onFail(TrackLoadFailEVent event, emit) => emit(TrackLoadFailState());
 }

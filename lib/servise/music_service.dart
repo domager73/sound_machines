@@ -8,7 +8,7 @@ import 'package:sound_machines/models/playlist.dart';
 import '../models/track.dart';
 
 
-const String defaultUrl = 'https://firebasestorage.googleapis.com/v0/b/brain-wave-e0b54.appspot.com/o/City%20Wolf%20X%20Tone%20Assassins%20-%20I%20Run%20This%20Jungle%20(256%20%20kbps).mp3?alt=media&token=2347c6cc-856b-455c-9676-3fd4671d2aa1';
+const String defaultUrl = 'https://www.chosic.com/wp-content/uploads/2022/02/storm-clouds-purpple-cat.mp3';
 
 class MusicService {
   FirebaseFirestore firestore = FirebaseFirestore.instance;

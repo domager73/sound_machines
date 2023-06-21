@@ -15,30 +15,48 @@ class PlayerRepository {
   BehaviorSubject<LoadingStateEnum> trackDataLoadingState =
       BehaviorSubject<LoadingStateEnum>.seeded(LoadingStateEnum.wait);
 
-  BehaviorSubject<TrackData?> playerStream = BehaviorSubject<TrackData?>.seeded(null);
+  BehaviorSubject<TrackData?> playerStream =
+      BehaviorSubject<TrackData?>.seeded(null);
+  BehaviorSubject<List<Track>> trackChanges =
+      BehaviorSubject<List<Track>>.seeded([]);
 
   AudioPlayer audioPlayer = AudioPlayer();
   late TrackData trackStreamData;
   Track? trackData;
   List<Track>? queue;
   int currentTrack = 0;
+  bool isPlaying = false;
 
   Future loadQueue() async {
     queue = await musicService.getAllTracks();
   }
 
-  void nextTrack() async  {
+  void nextTrack() async {
+    queue?[currentTrack].isPlay = false;
     currentTrack < queue!.length - 1 ? currentTrack++ : currentTrack = 0;
     trackData = queue?[currentTrack];
-    trackStreamData = TrackData(timeData: TrackTimeData(duration: Duration.zero, position: Duration.zero), data: trackData!);
+    queue?[currentTrack].isPlay = true;
+    trackChanges.add(queue!);
+    trackStreamData = TrackData(
+        timeData:
+            TrackTimeData(duration: Duration.zero, position: Duration.zero),
+        data: trackData!,
+        isPlaying: false);
     playerStream.add(trackStreamData);
     audioPlayer.play(UrlSource(trackData!.audioUrl));
   }
 
   void previousTrack() {
+    queue?[currentTrack].isPlay = false;
     currentTrack > 0 ? currentTrack-- : currentTrack = queue!.length - 1;
     trackData = queue?[currentTrack];
-    trackStreamData = TrackData(timeData: TrackTimeData(duration: Duration.zero, position: Duration.zero), data: trackData!);
+    queue?[currentTrack].isPlay = true;
+    trackChanges.add(queue!);
+    trackStreamData = TrackData(
+        timeData:
+            TrackTimeData(duration: Duration.zero, position: Duration.zero),
+        data: trackData!,
+        isPlaying: false);
     playerStream.add(trackStreamData);
     audioPlayer.play(UrlSource(trackData!.audioUrl));
   }
@@ -46,7 +64,15 @@ class PlayerRepository {
   void allChanges() async {
     audioPlayer.eventStream.listen((event) {
       print(event.eventType);
-      if (event.eventType == AudioEventType.duration) print(event.duration?.inSeconds);
+      if (event.eventType == AudioEventType.duration)
+        print(event.duration?.inSeconds);
+    });
+  }
+
+  void stateChanges() async {
+    audioPlayer.onPlayerStateChanged.listen((event) {
+      isPlaying = event == PlayerState.playing;
+      playerStream.add(trackStreamData.copyWithPlaying(isPlaying));
     });
   }
 
@@ -54,7 +80,8 @@ class PlayerRepository {
     audioPlayer.onDurationChanged.listen((event) {
       if (event.inSeconds > 0) {
         trackStreamData.data = trackData!;
-        trackStreamData.timeData = trackStreamData.timeData.copyWithDuration(event);
+        trackStreamData.timeData =
+            trackStreamData.timeData.copyWithDuration(event);
         playerStream.add(trackStreamData);
         print('-----------------------------------${event.inSeconds}');
       }
@@ -64,8 +91,10 @@ class PlayerRepository {
   void positionChanges() async {
     audioPlayer.onPositionChanged.listen((event) async {
       trackStreamData.data = trackData!;
-      trackStreamData.timeData = trackStreamData.timeData.copyWithPosition(event);
-      trackStreamData.timeData = trackStreamData.timeData.copyWithDuration(await audioPlayer.getDuration() ?? Duration.zero);
+      trackStreamData.timeData =
+          trackStreamData.timeData.copyWithPosition(event);
+      trackStreamData.timeData = trackStreamData.timeData
+          .copyWithDuration(await audioPlayer.getDuration() ?? Duration.zero);
       //print(trackStreamData);
       playerStream.add(trackStreamData);
     });
@@ -78,6 +107,7 @@ class PlayerRepository {
       setTrack(queue!.first, f: false);
       trackDataLoadingState.add(LoadingStateEnum.success);
       allChanges();
+      stateChanges();
       positionChanges();
       durationChanges();
       playerStream.stream.listen((event) {
@@ -88,29 +118,42 @@ class PlayerRepository {
     }
   }
 
-  void setTrack(Track track, {bool f = true}){
+  void setTrack(Track track, {bool f = true}) {
     if (trackData?.id != track.id) {
+      queue?[currentTrack].isPlay = false;
       currentTrack = track.id;
       trackData = queue?[track.id];
-      trackStreamData = TrackData(timeData: TrackTimeData(duration: Duration.zero, position: Duration.zero), data: track);
+      queue?[track.id].isPlay = true;
+      trackChanges.add(queue!);
+      trackStreamData = TrackData(
+          timeData:
+              TrackTimeData(duration: Duration.zero, position: Duration.zero),
+          data: track,
+          isPlaying: false);
       playerStream.add(trackStreamData);
-      f? audioPlayer.play(UrlSource(track.audioUrl)) : audioPlayer.setSourceUrl(track.audioUrl);
+      f
+          ? audioPlayer.play(UrlSource(track.audioUrl))
+          : audioPlayer.setSourceUrl(track.audioUrl);
     } else {
       audioPlayer.resume();
     }
-
   }
 }
-
 
 class TrackData {
   Track data;
   TrackTimeData timeData;
+  bool isPlaying;
 
-  TrackData({required this.timeData, required this.data});
+  TrackData(
+      {required this.timeData, required this.data, required this.isPlaying});
 
   TrackData copyWithTTD(TrackTimeData trackTimeData) {
-    return TrackData(timeData: trackTimeData, data: data);
+    return TrackData(timeData: trackTimeData, data: data, isPlaying: isPlaying);
+  }
+
+  TrackData copyWithPlaying(bool playing) {
+    return TrackData(timeData: timeData, data: data, isPlaying: playing);
   }
 
   @override

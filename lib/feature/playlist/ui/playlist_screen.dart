@@ -29,13 +29,19 @@ class _PlayListScreenState extends State<PlayListScreen> {
                   isButtonPlay: true,
                   expandedHeight: MediaQuery.of(context).size.height * 0.4,
                 ),
-                SliverFixedExtentList(
-                  delegate: SliverChildListDelegate(repository.queue!
-                      .map((e) => SmallTrekScreen(
-                            track: e,
-                          ))
-                      .toList()),
-                  itemExtent: 60,
+                StreamBuilder(
+                  stream: repository.trackChanges,
+                  initialData: repository.queue!,
+                  builder: (context, snapshot) {
+                    return SliverFixedExtentList(
+                      delegate: SliverChildListDelegate(snapshot.data!
+                          .map((e) => SmallTrekScreen(
+                                track: e,
+                              ))
+                          .toList()),
+                      itemExtent: 60,
+                    );
+                  }
                 ),
               ],
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
+import 'package:sound_machines/utils/colors.dart';
 
 import '../../feature/player/ui/player_screen.dart';
 import '../../models/track.dart';
@@ -20,8 +21,9 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
   Widget build(BuildContext context) {
     final repository =RepositoryProvider.of<PlayerRepository>(context);
     return Container(
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+        color: widget.track.isPlay ? AppColors.playerBackgroundColor : AppColors.blackColor
       ),
       width: MediaQuery.of(context).size.width,
       child: Padding(
@@ -56,7 +58,7 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
                 print('-------------------------------');
                 print(repository.trackData!.name);
                 print('-------------------------------');
-                Navigator.of(context).push(_createRoute());
+                //Navigator.of(context).push(_createRoute());
               },
             ),
             const InkWell(
@@ -66,15 +68,15 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
                 size: 25,
               ),
             ),
-            InkWell(
-              onTap: () {
-              },
-              child: Icon(
-                widget.track.isPlay ? Icons.pause : Icons.play_arrow,
-                color: Colors.white,
-                size: 30,
-              ),
-            ),
+            // InkWell(
+            //   onTap: () {
+            //   },
+            //   child: Icon(
+            //     widget.track.isPlay ? Icons.pause : Icons.play_arrow,
+            //     color: Colors.white,
+            //     size: 30,
+            //   ),
+            // ),
           ],
         ),
       ),

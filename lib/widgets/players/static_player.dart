@@ -68,22 +68,27 @@ class _StaticPLayerState extends State<StaticPLayer> {
                   size: 25,
                 ),
               ),
-              InkWell(
-                onTap: () async {
-                  repository.trackData!.isPlay
-                      ? await repository.audioPlayer.pause()
-                      : await repository.audioPlayer.resume();
+              StreamBuilder(
+                stream: repository.playerStream,
+                builder: (context, snapshot) {
+                  return InkWell(
+                    onTap: () async {
+                      repository.isPlaying
+                          ? await repository.audioPlayer.pause()
+                          : await repository.audioPlayer.resume();
 
-                  repository.trackData!.setIsPlay(!repository.trackData!.isPlay);
+                      repository.trackData!.setIsPlay(!repository.isPlaying);
 
-                  setState(() {
-                  });
-                },
-                child: Icon(
-                  repository.trackData!.isPlay ? Icons.pause : Icons.play_arrow,
-                  color: Colors.white,
-                  size: 30,
-                ),
+                      setState(() {
+                      });
+                    },
+                    child: Icon(
+                      repository.isPlaying ? Icons.pause : Icons.play_arrow,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                  );
+                }
               ),
             ],
           ),
