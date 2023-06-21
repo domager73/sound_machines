@@ -19,7 +19,7 @@ class SmallTrekScreen extends StatefulWidget {
 class _SmallTrekScreenState extends State<SmallTrekScreen> {
   @override
   Widget build(BuildContext context) {
-    final repository =RepositoryProvider.of<PlayerRepository>(context);
+    final repository = RepositoryProvider.of<PlayerRepository>(context);
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(10)),
@@ -58,7 +58,7 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
                 print('-------------------------------');
                 print(repository.trackData!.name);
                 print('-------------------------------');
-                //Navigator.of(context).push(_createRoute());
+                Navigator.of(context).push(_createRoute());
               },
             ),
             const InkWell(

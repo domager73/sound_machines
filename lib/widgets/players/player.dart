@@ -161,7 +161,6 @@ class _CustomPlayerState extends State<CustomPlayer> {
                                             : await repository.audioPlayer
                                                 .resume();
                                         setState(() {
-                                          isPlaying = !isPlaying;
                                         });
                                       },
                                       child: Icon(
