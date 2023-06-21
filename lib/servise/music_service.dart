@@ -52,36 +52,38 @@ class MusicService {
     return await child.putFile(image).then((p0) => child.getDownloadURL());
   }
 
-  Future<Track> getLastTrack() async {
-    final collection = await firestore.collection('musics').get();
-    final trackData = collection.docs.last.data();
-    return Track(name: trackData['name'], audioUrl: trackData['audioUrl'], imageUrl: trackData['imageUrl'], isPlay: false);
-  }
+  // Future<Track> getLastTrack() async {
+  //   final collection = await firestore.collection('musics').get();
+  //   final trackData = collection.docs.last.data();
+  //   return Track(name: trackData['name'], audioUrl: trackData['audioUrl'], imageUrl: trackData['imageUrl'], isPlay: false);
+  // }
 
   Future<List<Track>> getAllTracks() async {
     final collection = await firestore.collection('musics').get();
     List<Track> tracks = [];
 
+    int count = 0;
     for (var i in collection.docs) {
-      tracks.add(Track(name: i.data()['name'], audioUrl: i.data()['audioUrl'], imageUrl: i.data()['imageUrl'], isPlay: false));
+      tracks.add(Track(name: i.data()['name'], audioUrl: i.data()['audioUrl'], imageUrl: i.data()['imageUrl'], isPlay: false, id: count));
+      count++;
     }
 
     return tracks;
   }
 
-  Future<List<Track>> getPlaylistTracks(String id) async {
-    final playlist = await firestore.collection('playlists').doc(id).get();
-    final List tracksIds = playlist.data()!['tracks'];
-
-    List<Track> tracks = [];
-
-    for (var i in tracksIds) {
-      final doc = await firestore.collection('musics').doc(i).get();
-      tracks.add(Track(name: doc.data()!['name'], audioUrl: doc.data()!['audioUrl'], imageUrl: doc.data()!['imageUrl']));
-    }
-
-    return tracks;
-  }
+  // Future<List<Track>> getPlaylistTracks(String id) async {
+  //   final playlist = await firestore.collection('playlists').doc(id).get();
+  //   final List tracksIds = playlist.data()!['tracks'];
+  //
+  //   List<Track> tracks = [];
+  //
+  //   for (var i in tracksIds) {
+  //     final doc = await firestore.collection('musics').doc(i).get();
+  //     tracks.add(Track(name: doc.data()!['name'], audioUrl: doc.data()!['audioUrl'], imageUrl: doc.data()!['imageUrl'], isPlay: false),);
+  //   }
+  //
+  //   return tracks;
+  // }
 
 
   Future<List<Playlist>> loadPlaylists() async {

@@ -63,7 +63,8 @@ class PlayerRepository {
   void setTrack(Track track){
     trackData = track;
     audioPlayer.play(UrlSource(trackData!.audioUrl));
-    currentTrack = queue!.indexOf(track);
+    print(currentTrack);
+    currentTrack = track.id;
     print(currentTrack);
     print(trackData!.name);
   }

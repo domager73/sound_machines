@@ -64,10 +64,15 @@ class _CustomPlayerState extends State<CustomPlayer> {
       repository.previousTrack();
     }
 
-    repository.audioPlayer.onDurationChanged.listen((event) {duration = event;  if (duration.inSeconds > 0) prepared = true;});
-    repository.audioPlayer.onPlayerStateChanged.listen((event) {setState(() {
-      repository.trackData!.setIsPlay(event == PlayerState.playing);
-    });});
+    repository.audioPlayer.onDurationChanged.listen((event) {
+      duration = event;
+      if (duration.inSeconds > 0) prepared = true;
+    });
+    repository.audioPlayer.onPlayerStateChanged.listen((event) {
+      setState(() {
+        repository.trackData!.setIsPlay(event == PlayerState.playing);
+      });
+    });
 
     return StreamBuilder(
         stream: repository.audioPlayer.eventStream,
@@ -127,7 +132,6 @@ class _CustomPlayerState extends State<CustomPlayer> {
                             min: 0,
                             max: duration.inSeconds.toDouble(),
                             value: position.inSeconds.toDouble(),
-
                             onChanged: (value) async {
                               final positionValue =
                                   Duration(seconds: value.toInt());
@@ -181,7 +185,8 @@ class _CustomPlayerState extends State<CustomPlayer> {
                                           : await repository.audioPlayer
                                               .resume();
 
-                                      repository.trackData!.setIsPlay(repository.trackData!.isPlay);
+                                      repository.trackData!.setIsPlay(
+                                          repository.trackData!.isPlay);
                                     },
                                     child: Icon(
                                       repository.trackData!.isPlay
