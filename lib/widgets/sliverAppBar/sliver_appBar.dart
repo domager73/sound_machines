@@ -16,7 +16,6 @@ class AppBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 2
     return SliverAppBar(
       title: Text(
         text,
@@ -27,12 +26,9 @@ class AppBarWidget extends StatelessWidget {
       ),
       backgroundColor: AppColors.greenButton,
       centerTitle: centerTitle,
-      // 3
       expandedHeight: 200.0,
-      // 4
       pinned: true,
       elevation: 0,
-      // 5
       flexibleSpace: FlexibleSpaceBar(
         background: Image(image: AssetImage(imagePath),),
       ),

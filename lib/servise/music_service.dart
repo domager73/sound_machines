@@ -3,11 +3,12 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:sound_machines/models/playlist.dart';
 
 import '../models/track.dart';
 
 
-const String defaultUrl = 'https://firebasestorage.googleapis.com/v0/b/soundmachines-1964a.appspot.com/o/storm-clouds-purpple-cat.mp3?alt=media&token=71494c9f-f910-4e24-a2eb-ad5735d43755';
+const String defaultUrl = 'https://firebasestorage.googleapis.com/v0/b/brain-wave-e0b54.appspot.com/o/City%20Wolf%20X%20Tone%20Assassins%20-%20I%20Run%20This%20Jungle%20(256%20%20kbps).mp3?alt=media&token=2347c6cc-856b-455c-9676-3fd4671d2aa1';
 
 class MusicService {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -33,6 +34,12 @@ class MusicService {
     final String imageUrl = image != null ? await uploadImage(image, id) : '';
 
     await addData(id, {'audioUrl': audioUrl, 'imageUrl': imageUrl, 'name': name});
+  }
+
+  void createManyTracks(int count) {
+    for (var i = 0; i < count; i ++) {
+      uploadNewTrack(null, null, 'test $i');
+    }
   }
 
   Future<String> uploadAudio(File audio, String id) async {
@@ -61,4 +68,31 @@ class MusicService {
 
     return tracks;
   }
+
+  Future<List<Track>> getPlaylistTracks(String id) async {
+    final playlist = await firestore.collection('playlists').doc(id).get();
+    final List tracksIds = playlist.data()!['tracks'];
+
+    List<Track> tracks = [];
+
+    for (var i in tracksIds) {
+      final doc = await firestore.collection('musics').doc(i).get();
+      tracks.add(Track(name: doc.data()!['name'], audioUrl: doc.data()!['audioUrl'], imageUrl: doc.data()!['imageUrl']));
+    }
+
+    return tracks;
+  }
+
+
+  Future<List<Playlist>> loadPlaylists() async {
+    final collection = await firestore.collection('playlists').get();
+    List<Playlist> playlists = [];
+
+    for (var i in collection.docs) {
+      playlists.add(Playlist(name: i.data()['name'], imageUrl: i.data()['imageUrl'], id: i.id));
+    }
+
+    return playlists;
+  }
+
 }

@@ -9,6 +9,8 @@ import 'package:sound_machines/feature/auth/data/auth_repository.dart';
 import 'package:sound_machines/feature/auth/ui/login_screen.dart';
 import 'package:sound_machines/feature/auth/ui/registration_second_screen.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
+import 'package:sound_machines/feature/search_screen/bloc/playlists_cubit.dart';
+import 'package:sound_machines/feature/search_screen/data/playlist_repository.dart';
 import 'package:sound_machines/servise/auth_service.dart';
 import 'package:sound_machines/feature/auth/ui/welcome_screen.dart';
 import 'package:sound_machines/servise/custom_bloc_observer.dart';
@@ -24,6 +26,7 @@ import 'feature/auth/ui/registration_first_screen.dart';
 import 'feature/main/ui/main_screen.dart';
 import 'feature/player/bloc/player_bloc.dart';
 import 'feature/player/ui/player_screen.dart';
+import 'feature/search_screen/ui/search_screen.dart';
 import 'firebase_options.dart';
 
 
@@ -89,6 +92,8 @@ class MyRepositoryProviders extends StatelessWidget {
       RepositoryProvider(
           create: (_) => AuthRepository(authService: authService)),
       RepositoryProvider(
+          create: (_) => PlaylistRepository(musicService: musicService)),
+      RepositoryProvider(
           create: (_) => PlayerRepository(musicService: musicService))
     ], child: const MyBlocProviders());
   }
@@ -119,6 +124,13 @@ class MyBlocProviders extends StatelessWidget {
         )..add(PlayerSubscribe()),
         lazy: false,
       ),
+      BlocProvider(
+        lazy: false,
+        create: (_) => PlaylistsCubit(
+          playlistRepository: RepositoryProvider.of<PlaylistRepository>(context),
+        )
+      ),
+
     ], child: MyApp());
   }
 }
@@ -133,6 +145,7 @@ class HomePage extends StatelessWidget {
         child: BlocBuilder<AppBloc, AppState>(
           builder: (context, state) {
             if (state is AppAuthState) {
+              // return const MainScreen();
               return const MainScreen();
             } else {
               return const WelcomeScreen();
