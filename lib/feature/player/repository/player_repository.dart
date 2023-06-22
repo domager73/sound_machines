@@ -1,6 +1,7 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
+import 'dart:developer';
 import 'package:sound_machines/utils/constants.dart';
 import 'package:audioplayers/audioplayers.dart';
 
@@ -26,9 +27,11 @@ class PlayerRepository {
   List<Track>? queue;
   int currentTrack = 0;
   bool isPlaying = false;
+  bool skipping = false;
 
   Future loadQueue() async {
     queue = await musicService.getAllTracks();
+    trackChanges.add(queue ?? []);
   }
 
   void nextTrack() async {
@@ -61,6 +64,33 @@ class PlayerRepository {
     audioPlayer.play(UrlSource(trackData!.audioUrl));
   }
 
+  void seek15next() async {
+    if (!skipping) {
+      if (trackStreamData.timeData.position.inSeconds < trackStreamData.timeData.duration.inSeconds - 15) {
+        skipping = true;
+        await audioPlayer.seek(Duration(seconds: trackStreamData.timeData.position.inSeconds + 14));
+        skipping = false;
+      } else {
+        nextTrack();
+      }
+    }
+
+  }
+
+
+  void seek15previous() async {
+    if (!skipping) {
+      if (trackStreamData.timeData.position.inSeconds > 15) {
+        skipping = true;
+        await audioPlayer.seek(Duration(seconds: trackStreamData.timeData.position.inSeconds - 14));
+        skipping = false;
+      } else {
+        previousTrack();
+      }
+    }
+
+  }
+
   void allChanges() async {
     audioPlayer.eventStream.listen((event) {
       print(event.eventType);
@@ -73,6 +103,7 @@ class PlayerRepository {
     audioPlayer.onPlayerStateChanged.listen((event) {
       isPlaying = event == PlayerState.playing;
       playerStream.add(trackStreamData.copyWithPlaying(isPlaying));
+      log(isPlaying.toString());
     });
   }
 
@@ -104,7 +135,7 @@ class PlayerRepository {
     trackDataLoadingState.add(LoadingStateEnum.loading);
     try {
       await loadQueue();
-      setTrack(queue!.first, f: false);
+      //setTrack(queue!.first, f: false);
       trackDataLoadingState.add(LoadingStateEnum.success);
       allChanges();
       stateChanges();
