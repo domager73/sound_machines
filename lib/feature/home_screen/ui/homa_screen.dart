@@ -33,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 isButtonPlay: true,
                 isPlayList: false,
                 expandedHeight: MediaQuery.of(context).size.height * 0.7,
+
               ),
               SliverToBoxAdapter(
                 child: Container(

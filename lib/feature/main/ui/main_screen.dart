@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sound_machines/feature/home_screen/ui/search_screen.dart';
 import 'package:sound_machines/feature/main/bloc/navigation_cubit.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
 import 'package:sound_machines/feature/player/ui/player_screen.dart';
@@ -8,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sound_machines/widgets/players/static_player.dart';
 
 import '../../../utils/colors.dart';
+import '../../home_screen/ui/homa_screen.dart';
 import '../../playlist/ui/playlist_screen.dart';
 import '../../search/ui/search_screen.dart';
 

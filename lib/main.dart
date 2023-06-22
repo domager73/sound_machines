@@ -24,7 +24,7 @@ import 'bloc/app_bloc.dart';
 import 'feature/auth/ui/registration_first_screen.dart';
 import 'feature/home_screen/bloc/playlists_cubit.dart';
 import 'feature/home_screen/data/playlists_repository.dart';
-import 'feature/home_screen/ui/search_screen.dart';
+import 'feature/home_screen/ui/homa_screen.dart';
 import 'feature/main/bloc/navigation_cubit.dart';
 import 'feature/main/ui/main_screen.dart';
 import 'feature/player/bloc/player_bloc.dart';

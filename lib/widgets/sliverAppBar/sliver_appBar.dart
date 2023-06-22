@@ -22,8 +22,8 @@ class AppBarWidget extends StatelessWidget {
     required this.imagePath,
     required this.isButtonPlay,
     required this.expandedHeight,
-    this.canBack = false
-    required this.isPlayList,
+    this.canBack = false,
+    required this.isPlayList
   }) : super(key: key);
 
   @override
