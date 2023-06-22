@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sound_machines/feature/main/bloc/navigation_cubit.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
-import 'package:sound_machines/feature/player/ui/player_screen.dart';
-import 'package:sound_machines/utils/fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sound_machines/widgets/players/static_player.dart';
 
-import '../../../utils/colors.dart';
 import '../../home_screen/ui/homa_screen.dart';
 import '../../playlist/ui/playlist_screen.dart';
 import '../../search/ui/search_screen.dart';
@@ -26,15 +23,15 @@ class _MainScreenState extends State<MainScreen> {
 
   int _selectedTab = 0;
 
-  void onSelectTab(int index) {
-    if (_selectedTab == index) return;
-    setState(() {
-      _selectedTab = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    void onSelectTab(int index) {
+      BlocProvider.of<NavigationCubit>(context).viewMain();
+      if (_selectedTab == index) return;
+      setState(() {
+        _selectedTab = index;
+      });
+    }
     final repository = RepositoryProvider.of<PlayerRepository>(context);
     return WillPopScope(
       child: Scaffold(

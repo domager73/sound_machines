@@ -15,11 +15,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool whatSearch = false;
-
   @override
   Widget build(BuildContext context) {
+
     final repository = RepositoryProvider.of<PlaylistRepository>(context);
+    final playerRepository = RepositoryProvider.of<PlayerRepository>(context);
+
     return BlocBuilder<PlaylistsCubit, PlaylistsState>(
         builder: (context, state) {
       if (state is PlaylistsSuccessState) {
@@ -32,7 +33,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 isButtonPlay: true,
                 isPlayList: false,
                 expandedHeight: MediaQuery.of(context).size.height * 0.7,
-
               ),
               SliverToBoxAdapter(
                 child: Container(
@@ -42,11 +42,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SliverToBoxAdapter(
                   child: Container(
-                    child: const Text(
-                      'Ваш выбор',
-                      style: AppTypography.font32fff,
-                    ),
-                  )),
+                child: const Text(
+                  'Ваш выбор',
+                  style: AppTypography.font32fff,
+                ),
+              )),
               SliverToBoxAdapter(
                 child: Container(
                   height: 250.0,
@@ -99,6 +99,47 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
                 ),
+              ),
+              SliverToBoxAdapter(
+                  child: Container(
+                child: const Text(
+                  'Треки',
+                  style: AppTypography.font32fff,
+                ),
+              )),
+              StreamBuilder(
+                stream: playerRepository.playlistChanges,
+                builder: (context, snapshot) => playerRepository
+                                .currentPlayListId ==
+                            null &&
+                        (playerRepository.queue ?? []).isNotEmpty
+                    ? StreamBuilder(
+                        stream: playerRepository.trackChanges,
+                        builder: (context, snapshot) {
+                          return SliverFixedExtentList(
+                            delegate: SliverChildListDelegate(
+                                RepositoryProvider.of<PlaylistRepository>(
+                                        context)
+                                    .mixedTracks!
+                                    .map((e) => SmallTrekScreen(
+                                          track: e,
+                                          notInPlaylist: true,
+                                        ))
+                                    .toList()),
+                            itemExtent: 60,
+                          );
+                        })
+                    : SliverFixedExtentList(
+                        delegate: SliverChildListDelegate(
+                            RepositoryProvider.of<PlaylistRepository>(context)
+                                .mixedTracks!
+                                .map((e) => SmallTrekScreen(
+                                      track: e,
+                                      notInPlaylist: true,
+                                    ))
+                                .toList()),
+                        itemExtent: 60,
+                      ),
               ),
               SliverToBoxAdapter(
                 child: Container(

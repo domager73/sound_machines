@@ -26,7 +26,8 @@ class PlayerRepository {
       BehaviorSubject<TrackData?>.seeded(null);
   BehaviorSubject<List<Track>> trackChanges =
       BehaviorSubject<List<Track>>.seeded([]);
-  BehaviorSubject<String?> playlistChanges = BehaviorSubject<String?>.seeded(null);
+  BehaviorSubject<String?> playlistChanges =
+      BehaviorSubject<String?>.seeded(null);
 
   AudioPlayer audioPlayer = AudioPlayer();
   late TrackData trackStreamData;
@@ -133,21 +134,24 @@ class PlayerRepository {
     });
   }
 
-  void setNewPlaylist(String playlistId, List<Track> newQueue, {int index = 0}) async {
+  void setNewPlaylist(String? playlistId, List<Track> newQueue,
+      {int index = 0}) async {
     queue = newQueue;
+    trackChanges.add(queue!);
+    currentPlayListId = playlistId;
     final track = queue![index];
     currentTrack = track.id;
     trackData = queue?[track.id];
     queue?[track.id].isPlay = true;
-    trackChanges.add(queue!);
+
     trackStreamData = TrackData(
         timeData:
-        TrackTimeData(duration: Duration.zero, position: Duration.zero),
+            TrackTimeData(duration: Duration.zero, position: Duration.zero),
         data: track,
         isPlaying: false);
     playerStream.add(trackStreamData);
     await audioPlayer.play(UrlSource(track.audioUrl));
-    currentPlayListId = playlistId;
+
     playlistChanges.add(playlistId);
     trackDataLoadingState.add(LoadingStateEnum.success);
   }
@@ -156,7 +160,6 @@ class PlayerRepository {
     trackDataLoadingState.add(LoadingStateEnum.loading);
     try {
       await loadQueue();
-      //setTrack(queue!.first, f: false);
       trackDataLoadingState.add(LoadingStateEnum.success);
     } catch (e) {
       trackDataLoadingState.add(LoadingStateEnum.fail);

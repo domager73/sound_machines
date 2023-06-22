@@ -58,8 +58,8 @@ class MusicService {
   //   return Track(name: trackData['name'], audioUrl: trackData['audioUrl'], imageUrl: trackData['imageUrl'], isPlay: false);
   // }
 
-  Future<List<Track>> getAllTracks() async {
-    final collection = await firestore.collection('musics').get();
+  Future<List<Track>> getAllTracks({int limit = 20}) async {
+    final collection = await firestore.collection('musics').limit(limit).get();
     List<Track> tracks = [];
 
     int count = 0;
@@ -94,8 +94,7 @@ class MusicService {
 
     return tracks;
   }
-
-
+  
   Future<List<Playlist>> loadPlaylists() async {
     final collection = await firestore.collection('playlists').get();
     List<Playlist> playlists = [];
