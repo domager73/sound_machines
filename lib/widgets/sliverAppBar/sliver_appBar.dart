@@ -14,6 +14,7 @@ class AppBarWidget extends StatelessWidget {
   final bool isButtonPlay;
   final double expandedHeight;
   final bool canBack;
+  final bool isPlayList;
 
   const AppBarWidget({
     Key? key,
@@ -22,6 +23,7 @@ class AppBarWidget extends StatelessWidget {
     required this.isButtonPlay,
     required this.expandedHeight,
     this.canBack = false
+    required this.isPlayList,
   }) : super(key: key);
 
   @override

@@ -11,15 +11,15 @@ class CustomTextField extends StatelessWidget {
   final bool isError;
   final double borderRadius;
 
-  const CustomTextField(
-      {Key? key,
-      required this.controller,
-      required this.isError,
-      this.width = 290,
-      this.height = 50,
-      this.keyBoardType = TextInputType.text,
-      this.borderRadius = 5})
-      : super(key: key);
+  const CustomTextField({
+    Key? key,
+    required this.controller,
+    required this.isError,
+    this.width = 290,
+    this.height = 50,
+    this.keyBoardType = TextInputType.text,
+    this.borderRadius = 5,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,9 @@ class CustomTextField extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
-          color: isError ? AppColors.errorColorTextField : AppColors.colorTextField),
+          color: isError
+              ? AppColors.errorColorTextField
+              : AppColors.colorTextField),
       child: TextFormField(
         //onSaved: (_) {FocusScope.of(context).requestFocus(FocusNode());},
         keyboardType: keyBoardType,

@@ -8,6 +8,8 @@ import 'package:sound_machines/feature/auth/ui/login_screen.dart';
 import 'package:sound_machines/feature/auth/ui/registration_second_screen.dart';
 import 'package:sound_machines/feature/home_screen/bloc/playlist_tracks_cubit.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
+import 'package:sound_machines/feature/search/bloc/search_cubit.dart';
+import 'package:sound_machines/feature/search/repository/search_repository.dart';
 import 'package:sound_machines/servise/auth_service.dart';
 import 'package:sound_machines/feature/auth/ui/welcome_screen.dart';
 import 'package:sound_machines/servise/custom_bloc_observer.dart';
@@ -27,6 +29,8 @@ import 'feature/main/bloc/navigation_cubit.dart';
 import 'feature/main/ui/main_screen.dart';
 import 'feature/player/bloc/player_bloc.dart';
 import 'firebase_options.dart';
+
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -80,7 +84,7 @@ class MyRepositoryProviders extends StatelessWidget {
   MyRepositoryProviders({Key? key}) : super(key: key);
 
   final authService = AuthService();
-  final musicService = MusicService()..test();
+  final musicService = MusicService();
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +96,9 @@ class MyRepositoryProviders extends StatelessWidget {
       RepositoryProvider(
           create: (_) => PlaylistRepository(musicService: musicService)),
       RepositoryProvider(
-          create: (_) => PlayerRepository(musicService: musicService))
+          create: (_) => PlayerRepository(musicService: musicService)),
+      RepositoryProvider(
+          create: (_) => SearchRepository(musicService: musicService))
     ], child: const MyBlocProviders());
   }
 }
@@ -140,6 +146,12 @@ class MyBlocProviders extends StatelessWidget {
         lazy: false,
         create: (_) => NavigationCubit(),
       ),
+      BlocProvider(
+        lazy: false,
+        create: (_) => SearchCubit(
+            searchRepository: RepositoryProvider.of<SearchRepository>(context)),
+      ),
+
     ], child: MyApp());
   }
 }
