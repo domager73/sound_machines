@@ -17,11 +17,11 @@ class SearchRepository {
   BehaviorSubject<LoadingStateEnum> searchLoadingState =
       BehaviorSubject<LoadingStateEnum>.seeded(LoadingStateEnum.wait);
 
-  void loadTracks() async{
+  void loadTracks() async {
     tracks = await musicService.getAllTracks();
   }
 
-  void loadPlayList() async{
+  void loadPlayList() async {
     playLists = await musicService.loadPlaylists();
   }
 
@@ -37,12 +37,18 @@ class SearchRepository {
     }
   }
 
-  void searchTracksByName(String str){
+  void searchTracksByName(String str) {
     searchLoadingState.add(LoadingStateEnum.loading);
 
+    if (str.isEmpty) {
+      searchTracks = [];
+      searchLoadingState.add(LoadingStateEnum.success);
+      return;
+    }
+
     List<Track> resTracks = [];
-    for(var i = 0; i < tracks!.length; i++){
-      if(tracks![i].name.toLowerCase().contains(str.toLowerCase())){
+    for (var i = 0; i < tracks!.length; i++) {
+      if (tracks![i].name.toLowerCase().contains(str.toLowerCase())) {
         resTracks.add(tracks![i]);
       }
     }
@@ -51,12 +57,18 @@ class SearchRepository {
     searchLoadingState.add(LoadingStateEnum.success);
   }
 
-  void searchPlayListByName(String str){
+  void searchPlayListByName(String str) {
     searchLoadingState.add(LoadingStateEnum.loading);
 
+    if (str.isEmpty) {
+      searchPLayList = [];
+      searchLoadingState.add(LoadingStateEnum.success);
+      return;
+    }
+
     List<Playlist> resPlayList = [];
-    for(var i = 0; i < playLists!.length; i++){
-      if(playLists![i].name.toLowerCase().contains(str.toLowerCase())){
+    for (var i = 0; i < playLists!.length; i++) {
+      if (playLists![i].name.toLowerCase().contains(str.toLowerCase())) {
         resPlayList.add(playLists![i]);
       }
     }
