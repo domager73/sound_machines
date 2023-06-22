@@ -3,22 +3,24 @@ import 'package:sound_machines/utils/colors.dart';
 
 import '../../utils/fonts.dart';
 
-class CustomTextField extends StatelessWidget{
+class DynamicTextField extends StatelessWidget{
   final double width;
   final double height;
   final TextEditingController controller;
   final TextInputType keyBoardType;
-  final bool isError;
   final double borderRadius;
+  final ValueChanged<String>? changed;
+  final Color color;
 
-  CustomTextField({
+  const DynamicTextField({
     Key? key,
     required this.controller,
-    required this.isError,
     this.width = 290,
     this.height = 50,
     this.keyBoardType = TextInputType.text,
     this.borderRadius = 5,
+    required this.changed,
+    required this.color
   }) : super(key: key);
 
   @override
@@ -28,12 +30,11 @@ class CustomTextField extends StatelessWidget{
       height: height,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
-          color: isError
-              ? AppColors.errorColorTextField
-              : AppColors.colorTextField),
+          color: color),
       child: TextFormField(
+        onChanged: changed,
         keyboardType: keyBoardType,
-        style: isError ? AppTypography.font16f00 : AppTypography.font16fff,
+        style: AppTypography.font16fff,
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(borderRadius)),

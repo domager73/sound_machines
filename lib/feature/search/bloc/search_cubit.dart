@@ -21,9 +21,11 @@ class SearchCubit extends Cubit<SearchState> {
     searchRepository.initialLoadTracks();
   }
 
-  loadTracks(String str) {
-    print(str);
-    print('--------------');
-    searchRepository.searchTrackByCharElem(str);
+  searchTracks(String str) {
+    searchRepository.searchTracksByName(str);
+  }
+
+  searchPlayList(String str){
+    searchRepository.searchPlayListByName(str);
   }
 }

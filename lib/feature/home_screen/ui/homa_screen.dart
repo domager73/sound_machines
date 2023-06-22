@@ -15,12 +15,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool whatSearch = false;
+
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width * 0.5;
-
     final repository = RepositoryProvider.of<PlaylistRepository>(context);
-    // BlocProvider.of<PlaylistsCubit>(context).initialLoadPlaylists();
     return BlocBuilder<PlaylistsCubit, PlaylistsState>(
         builder: (context, state) {
       if (state is PlaylistsSuccessState) {
@@ -28,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
           body: CustomScrollView(
             slivers: <Widget>[
               AppBarWidget(
-                text: 'Spotity',
+                text: 'Spotify',
                 imagePath: 'Assets/image_not_found.jpg',
                 isButtonPlay: true,
                 isPlayList: false,
@@ -61,7 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-
               SliverToBoxAdapter(
                   child: Container(
                 child: const Text(
@@ -102,7 +100,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-
               SliverToBoxAdapter(
                 child: Container(
                   height: 60,

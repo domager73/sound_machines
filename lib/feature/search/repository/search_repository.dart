@@ -1,6 +1,7 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:sound_machines/utils/constants.dart';
 
+import '../../../models/playlist.dart';
 import '../../../models/track.dart';
 import '../../../servise/music_service.dart';
 
@@ -8,24 +9,27 @@ class SearchRepository {
   final MusicService musicService;
   List<Track>? tracks = [];
   List<Track>? searchTracks = [];
+  List<Playlist>? playLists = [];
+  List<Playlist>? searchPLayList = [];
 
   SearchRepository({required this.musicService});
 
   BehaviorSubject<LoadingStateEnum> searchLoadingState =
       BehaviorSubject<LoadingStateEnum>.seeded(LoadingStateEnum.wait);
 
-  BehaviorSubject<List<Track>> trackChanges =
-      BehaviorSubject<List<Track>>.seeded([]);
-
   void loadTracks() async{
     tracks = await musicService.getAllTracks();
-    trackChanges.add(tracks!);
+  }
+
+  void loadPlayList() async{
+    playLists = await musicService.loadPlaylists();
   }
 
   void initialLoadTracks() async {
     searchLoadingState.add(LoadingStateEnum.loading);
     try {
-      tracks = await musicService.getAllTracks();
+      loadTracks();
+      loadPlayList();
       searchLoadingState.add(LoadingStateEnum.success);
     } catch (e) {
       searchLoadingState.add(LoadingStateEnum.fail);
@@ -33,15 +37,30 @@ class SearchRepository {
     }
   }
 
-  void searchTrackByCharElem(String str){
+  void searchTracksByName(String str){
     searchLoadingState.add(LoadingStateEnum.loading);
+
     List<Track> resTracks = [];
-    for(var i = 0; i < tracks!.length - 1; i++){
-      if(tracks![i].name.contains(str)){
+    for(var i = 0; i < tracks!.length; i++){
+      if(tracks![i].name.toLowerCase().contains(str.toLowerCase())){
         resTracks.add(tracks![i]);
       }
     }
     searchTracks = resTracks;
+
+    searchLoadingState.add(LoadingStateEnum.success);
+  }
+
+  void searchPlayListByName(String str){
+    searchLoadingState.add(LoadingStateEnum.loading);
+
+    List<Playlist> resPlayList = [];
+    for(var i = 0; i < playLists!.length; i++){
+      if(playLists![i].name.toLowerCase().contains(str.toLowerCase())){
+        resPlayList.add(playLists![i]);
+      }
+    }
+    searchPLayList = resPlayList;
 
     searchLoadingState.add(LoadingStateEnum.success);
   }

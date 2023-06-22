@@ -34,9 +34,12 @@ class PlaylistWidget extends StatelessWidget {
                   image: DecorationImage(image: NetworkImage(playlist.imageUrl), fit: BoxFit.cover)),
             ),
           ),
-          Text(
-            playlist.name,
-            style: AppTypography.font20fff,
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Text(
+              playlist.name,
+              style: AppTypography.font20fff,
+            ),
           )
         ],
       ),

@@ -29,7 +29,8 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
         repository.setTrack(repository.queue![index ?? 0]);
       } else {
         repository.setNewPlaylist(
-          playlistRepository.currentPlaylist!, playlistRepository.tracks!, index: widget.track.id);
+            playlistRepository.currentPlaylist!, playlistRepository.tracks!,
+            index: widget.track.id);
       }
     }
 
@@ -69,9 +70,6 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
               ),
               onTap: () {
                 setPlay(widget.track.id);
-                print('-------------------------------');
-                print(repository.trackData!.name);
-                print('-------------------------------');
               },
             ),
             const InkWell(
@@ -81,15 +79,6 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
                 size: 25,
               ),
             ),
-            // InkWell(
-            //   onTap: () {
-            //   },
-            //   child: Icon(
-            //     widget.track.isPlay ? Icons.pause : Icons.play_arrow,
-            //     color: Colors.white,
-            //     size: 30,
-            //   ),
-            // ),
           ],
         ),
       ),
