@@ -63,7 +63,7 @@ class AppBarWidget extends StatelessWidget {
             ),
           ],
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.blackColor,
         centerTitle: false,
         expandedHeight: expandedHeight,
         pinned: true,
