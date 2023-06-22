@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sound_machines/feature/home_screen/ui/search_screen.dart';
+import 'package:sound_machines/feature/main/bloc/navigation_cubit.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
 import 'package:sound_machines/feature/player/ui/player_screen.dart';
 import 'package:sound_machines/utils/fonts.dart';
@@ -36,16 +37,22 @@ class _MainScreenState extends State<MainScreen> {
     final repository = RepositoryProvider.of<PlayerRepository>(context);
     return WillPopScope(
       child: Scaffold(
-        body: StreamBuilder(
-          stream: repository.playerStream,
-          builder: (context, snapshot) {
-            return Stack(
-              children: [
-                _widgetOptions[_selectedTab],
-                repository.trackData != null ? const StaticPLayer() : Container(),
-              ],
+        body: BlocBuilder<NavigationCubit, NavigationState>(
+          builder: (context, state) {
+            return StreamBuilder(
+                stream: repository.playerStream,
+                builder: (context, snapshot) {
+                  return Stack(
+                    children: [
+                      state is PlaylistScreenState ? const PlayListScreen() : _widgetOptions[_selectedTab],
+                      repository.trackData != null
+                          ? const StaticPLayer()
+                          : Container(),
+                    ],
+                  );
+                }
             );
-          }
+          },
         ),
         bottomNavigationBar: ClipRRect(
           child: BottomNavigationBar(

@@ -6,6 +6,7 @@ import 'package:sound_machines/feature/auth/bloc/auth_bloc.dart';
 import 'package:sound_machines/feature/auth/data/auth_repository.dart';
 import 'package:sound_machines/feature/auth/ui/login_screen.dart';
 import 'package:sound_machines/feature/auth/ui/registration_second_screen.dart';
+import 'package:sound_machines/feature/home_screen/bloc/playlist_tracks_cubit.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
 import 'package:sound_machines/servise/auth_service.dart';
 import 'package:sound_machines/feature/auth/ui/welcome_screen.dart';
@@ -22,11 +23,10 @@ import 'feature/auth/ui/registration_first_screen.dart';
 import 'feature/home_screen/bloc/playlists_cubit.dart';
 import 'feature/home_screen/data/playlists_repository.dart';
 import 'feature/home_screen/ui/search_screen.dart';
+import 'feature/main/bloc/navigation_cubit.dart';
 import 'feature/main/ui/main_screen.dart';
 import 'feature/player/bloc/player_bloc.dart';
 import 'firebase_options.dart';
-
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,11 +65,11 @@ class _MyAppState extends State<MyApp> {
       ),
       color: const Color(0xff292B57),
       routes: {
-        '/welcome_screen' : (context) => const WelcomeScreen(),
-        '/login_screen' : (context) => const LoginScreen(),
-        '/register_first_screen' : (context) => const RegisterFirstScreen(),
-        '/register_second_screen' : (context) => const RegisterSecondScreen(),
-        '/homa_screen' : (context) => const HomeScreen()
+        '/welcome_screen': (context) => const WelcomeScreen(),
+        '/login_screen': (context) => const LoginScreen(),
+        '/register_first_screen': (context) => const RegisterFirstScreen(),
+        '/register_second_screen': (context) => const RegisterSecondScreen(),
+        '/homa_screen': (context) => const HomeScreen()
       },
       home: const HomePage(),
     );
@@ -80,7 +80,7 @@ class MyRepositoryProviders extends StatelessWidget {
   MyRepositoryProviders({Key? key}) : super(key: key);
 
   final authService = AuthService();
-  final musicService = MusicService();
+  final musicService = MusicService()..test();
 
   @override
   Widget build(BuildContext context) {
@@ -119,17 +119,27 @@ class MyBlocProviders extends StatelessWidget {
       BlocProvider(
         create: (_) => PlayerBloc(
           playerRepository: RepositoryProvider.of<PlayerRepository>(context),
-          playlistRepository: RepositoryProvider.of<PlaylistRepository>(context),
+          playlistRepository:
+              RepositoryProvider.of<PlaylistRepository>(context),
         )..add(PlayerSubscribe()),
         lazy: false,
       ),
       BlocProvider(
+          lazy: false,
+          create: (_) => PlaylistsCubit(
+                playlistRepository:
+                    RepositoryProvider.of<PlaylistRepository>(context),
+              )..initialLoadPlaylists()),
+      BlocProvider(
+          lazy: false,
+          create: (_) => PlaylistTracksCubit(
+                playlistRepository:
+                    RepositoryProvider.of<PlaylistRepository>(context),
+              )),
+      BlocProvider(
         lazy: false,
-        create: (_) => PlaylistsCubit(
-          playlistRepository: RepositoryProvider.of<PlaylistRepository>(context),
-        )
+        create: (_) => NavigationCubit(),
       ),
-
     ], child: MyApp());
   }
 }

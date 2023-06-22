@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sound_machines/feature/home_screen/data/playlists_repository.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
 import 'package:sound_machines/utils/colors.dart';
 
@@ -20,11 +21,24 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
   @override
   Widget build(BuildContext context) {
     final repository = RepositoryProvider.of<PlayerRepository>(context);
+    final playlistRepository =
+        RepositoryProvider.of<PlaylistRepository>(context);
+
+    void setPlay(int? index) {
+      if (playlistRepository.currentPlaylist == repository.currentPlayListId) {
+        repository.setTrack(repository.queue![index ?? 0]);
+      } else {
+        repository.setNewPlaylist(
+          playlistRepository.currentPlaylist!, playlistRepository.tracks!, index: widget.track.id);
+      }
+    }
+
     return Container(
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(10)),
-        color: widget.track.isPlay ? AppColors.playerBackgroundColor : AppColors.blackColor
-      ),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          color: widget.track.isPlay
+              ? AppColors.playerBackgroundColor
+              : AppColors.blackColor),
       width: MediaQuery.of(context).size.width,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -54,7 +68,7 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
                 ],
               ),
               onTap: () {
-                repository.setTrack(widget.track);
+                setPlay(widget.track.id);
                 print('-------------------------------');
                 print(repository.trackData!.name);
                 print('-------------------------------');
@@ -81,23 +95,4 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
       ),
     );
   }
-}
-
-Route _createRoute() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) =>
-        const PlayerScreen(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(0.0, 1.0);
-      const end = Offset.zero;
-      const curve = Curves.easeInCirc;
-
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  );
 }

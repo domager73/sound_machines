@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final width = MediaQuery.of(context).size.width * 0.5;
 
     final repository = RepositoryProvider.of<PlaylistRepository>(context);
-    BlocProvider.of<PlaylistsCubit>(context).initialLoadPlaylists();
+    // BlocProvider.of<PlaylistsCubit>(context).initialLoadPlaylists();
     return BlocBuilder<PlaylistsCubit, PlaylistsState>(
         builder: (context, state) {
       if (state is PlaylistsSuccessState) {
@@ -39,6 +39,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Colors.transparent,
                 ),
               ),
+              SliverToBoxAdapter(
+                  child: Container(
+                    child: const Text(
+                      'Ваш выбор',
+                      style: AppTypography.font32fff,
+                    ),
+                  )),
+              SliverToBoxAdapter(
+                child: Container(
+                  height: 250.0,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: repository.playlists!.length,
+                    itemBuilder: (context, index) {
+                      return PlaylistWidget(
+                          playlist: repository.playlists![index]);
+                    },
+                  ),
+                ),
+              ),
+
               SliverToBoxAdapter(
                   child: Container(
                 child: const Text(
@@ -79,29 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              SliverToBoxAdapter(
-                  child: Container(
-                    child: const Text(
-                      'Ваш выбор',
-                      style: AppTypography.font32fff,
-                    ),
-                  )),
-              SliverGrid(
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: width * 1.2,
-                  mainAxisExtent: width * 1.2,
-                  mainAxisSpacing: 10.0,
-                  crossAxisSpacing: 10.0,
-                  childAspectRatio: 10.0,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                    return PlaylistWidget(
-                        playlist: repository.playlists![index]);
-                  },
-                  childCount: repository.playlists!.length,
-                ),
-              ),
+
               SliverToBoxAdapter(
                 child: Container(
                   height: 60,

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:sound_machines/feature/main/bloc/navigation_cubit.dart';
 import 'package:sound_machines/models/playlist.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sound_machines/utils/fonts.dart';
+
+import '../../feature/home_screen/data/playlists_repository.dart';
+import '../../feature/playlist/ui/playlist_screen.dart';
 
 class PlaylistWidget extends StatelessWidget {
   PlaylistWidget({super.key, required this.playlist});
@@ -19,7 +23,9 @@ class PlaylistWidget extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              Navigator.pushNamed(context, '');
+              RepositoryProvider.of<PlaylistRepository>(context).playlistData = playlist;
+              RepositoryProvider.of<PlaylistRepository>(context).loadPlaylistTracks(playlistId: playlist.id);
+              BlocProvider.of<NavigationCubit>(context).viewPlaylist();
             },
             child: Container(
               width: width,

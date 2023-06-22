@@ -71,6 +71,11 @@ class MusicService {
     return tracks;
   }
 
+  void test() async {
+    final doc = await firestore.collection('musics').doc('841jl2ijfbZHalZdjgEY').get();
+    print(doc.exists);
+  }
+
   Future<List<Track>> getPlaylistTracks(String id) async {
     final playlist = await firestore.collection('playlists').doc(id).get();
     final List tracksIds = playlist.data()!['tracks'];
@@ -78,9 +83,13 @@ class MusicService {
     List<Track> tracks = [];
     int n = 0;
     for (var i in tracksIds) {
-      final doc = await firestore.collection('musics').doc(i).get();
-      tracks.add(Track(name: doc.data()!['name'], audioUrl: doc.data()!['audioUrl'], imageUrl: doc.data()!['imageUrl'], isPlay: false, id: n),);
-      n++;
+      print(i);
+      final doc = await firestore.collection('musics').doc(i.trim()).get();
+      print(doc.exists);
+
+        tracks.add(Track(name: doc.data()!['name'], audioUrl: doc.data()!['audioUrl'], imageUrl: doc.data()!['imageUrl'], isPlay: false, id: n),);
+        n++;
+
     }
 
     return tracks;

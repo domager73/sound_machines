@@ -11,7 +11,15 @@ import '../../../servise/music_service.dart';
 class PlayerRepository {
   final MusicService musicService;
 
-  PlayerRepository({required this.musicService});
+  PlayerRepository({required this.musicService}) : super() {
+    allChanges();
+    stateChanges();
+    positionChanges();
+    durationChanges();
+    playerStream.stream.listen((event) {
+      print(event);
+    });
+  }
 
   BehaviorSubject<LoadingStateEnum> trackDataLoadingState =
       BehaviorSubject<LoadingStateEnum>.seeded(LoadingStateEnum.wait);
@@ -20,6 +28,7 @@ class PlayerRepository {
       BehaviorSubject<TrackData?>.seeded(null);
   BehaviorSubject<List<Track>> trackChanges =
       BehaviorSubject<List<Track>>.seeded([]);
+  BehaviorSubject<String?> playlistChanges = BehaviorSubject<String?>.seeded(null);
 
   AudioPlayer audioPlayer = AudioPlayer();
   late TrackData trackStreamData;
@@ -28,6 +37,7 @@ class PlayerRepository {
   int currentTrack = 0;
   bool isPlaying = false;
   bool skipping = false;
+  String? currentPlayListId;
 
   Future loadQueue() async {
     queue = await musicService.getAllTracks();
@@ -66,38 +76,32 @@ class PlayerRepository {
 
   void seek15next() async {
     if (!skipping) {
-      if (trackStreamData.timeData.position.inSeconds < trackStreamData.timeData.duration.inSeconds - 15) {
+      if (trackStreamData.timeData.position.inSeconds <
+          trackStreamData.timeData.duration.inSeconds - 15) {
         skipping = true;
-        await audioPlayer.seek(Duration(seconds: trackStreamData.timeData.position.inSeconds + 14));
+        await audioPlayer.seek(Duration(
+            seconds: trackStreamData.timeData.position.inSeconds + 14));
         skipping = false;
       } else {
         nextTrack();
       }
     }
-
   }
-
 
   void seek15previous() async {
     if (!skipping) {
       if (trackStreamData.timeData.position.inSeconds > 15) {
         skipping = true;
-        await audioPlayer.seek(Duration(seconds: trackStreamData.timeData.position.inSeconds - 14));
+        await audioPlayer.seek(Duration(
+            seconds: trackStreamData.timeData.position.inSeconds - 14));
         skipping = false;
       } else {
         previousTrack();
       }
     }
-
   }
 
-  void allChanges() async {
-    audioPlayer.eventStream.listen((event) {
-      print(event.eventType);
-      if (event.eventType == AudioEventType.duration)
-        print(event.duration?.inSeconds);
-    });
-  }
+  void allChanges() async {}
 
   void stateChanges() async {
     audioPlayer.onPlayerStateChanged.listen((event) {
@@ -131,25 +135,37 @@ class PlayerRepository {
     });
   }
 
+  void setNewPlaylist(String playlistId, List<Track> newQueue, {int index = 0}) async {
+    queue = newQueue;
+    final track = queue![index];
+    currentTrack = track.id;
+    trackData = queue?[track.id];
+    queue?[track.id].isPlay = true;
+    trackChanges.add(queue!);
+    trackStreamData = TrackData(
+        timeData:
+        TrackTimeData(duration: Duration.zero, position: Duration.zero),
+        data: track,
+        isPlaying: false);
+    playerStream.add(trackStreamData);
+    await audioPlayer.play(UrlSource(track.audioUrl));
+    currentPlayListId = playlistId;
+    playlistChanges.add(playlistId);
+    trackDataLoadingState.add(LoadingStateEnum.success);
+  }
+
   void initialLoad() async {
     trackDataLoadingState.add(LoadingStateEnum.loading);
     try {
       await loadQueue();
       //setTrack(queue!.first, f: false);
       trackDataLoadingState.add(LoadingStateEnum.success);
-      allChanges();
-      stateChanges();
-      positionChanges();
-      durationChanges();
-      playerStream.stream.listen((event) {
-        print(event);
-      });
     } catch (e) {
       trackDataLoadingState.add(LoadingStateEnum.fail);
     }
   }
 
-  void setTrack(Track track, {bool f = true}) {
+  Future setTrack(Track track, {bool f = true}) async {
     if (trackData?.id != track.id) {
       queue?[currentTrack].isPlay = false;
       currentTrack = track.id;
@@ -163,10 +179,10 @@ class PlayerRepository {
           isPlaying: false);
       playerStream.add(trackStreamData);
       f
-          ? audioPlayer.play(UrlSource(track.audioUrl))
-          : audioPlayer.setSourceUrl(track.audioUrl);
+          ? await audioPlayer.play(UrlSource(track.audioUrl))
+          : await audioPlayer.setSourceUrl(track.audioUrl);
     } else {
-      audioPlayer.resume();
+      await audioPlayer.resume();
     }
   }
 }
