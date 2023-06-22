@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:sound_machines/utils/constants.dart';
 
+import '../../search_screen/data/playlists_repository.dart';
 import '../repository/player_repository.dart';
 
 part 'player_event.dart';
@@ -12,8 +13,9 @@ part 'player_state.dart';
 
 class PlayerBloc extends Bloc<PlayerEvent, PlayerBlocState> {
   PlayerRepository playerRepository;
+  PlaylistRepository playlistRepository;
 
-  PlayerBloc({required this.playerRepository}) : super(PlayerInitial()) {
+  PlayerBloc({required this.playerRepository, required this.playlistRepository}) : super(PlayerInitial()) {
     on<PlayerSubscribe>(_subscribe);
     on<InitialLoadEvent>(_initialLoad);
     on<PlayerLoadingEvent>(_onLoading);

@@ -71,19 +71,20 @@ class MusicService {
     return tracks;
   }
 
-  // Future<List<Track>> getPlaylistTracks(String id) async {
-  //   final playlist = await firestore.collection('playlists').doc(id).get();
-  //   final List tracksIds = playlist.data()!['tracks'];
-  //
-  //   List<Track> tracks = [];
-  //
-  //   for (var i in tracksIds) {
-  //     final doc = await firestore.collection('musics').doc(i).get();
-  //     tracks.add(Track(name: doc.data()!['name'], audioUrl: doc.data()!['audioUrl'], imageUrl: doc.data()!['imageUrl'], isPlay: false),);
-  //   }
-  //
-  //   return tracks;
-  // }
+  Future<List<Track>> getPlaylistTracks(String id) async {
+    final playlist = await firestore.collection('playlists').doc(id).get();
+    final List tracksIds = playlist.data()!['tracks'];
+
+    List<Track> tracks = [];
+    int n = 0;
+    for (var i in tracksIds) {
+      final doc = await firestore.collection('musics').doc(i).get();
+      tracks.add(Track(name: doc.data()!['name'], audioUrl: doc.data()!['audioUrl'], imageUrl: doc.data()!['imageUrl'], isPlay: false, id: n),);
+      n++;
+    }
+
+    return tracks;
+  }
 
 
   Future<List<Playlist>> loadPlaylists() async {

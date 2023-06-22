@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sound_machines/feature/search_screen/bloc/playlists_cubit.dart';
-import 'package:sound_machines/feature/search_screen/data/playlist_repository.dart';
+import 'package:sound_machines/feature/search_screen/data/playlists_repository.dart';
 import 'package:sound_machines/widgets/sliverAppBar/sliver_playlistContainer.dart';
 
 import '../../../widgets/sliverAppBar/sliver_appBar.dart';
@@ -30,7 +30,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 text: 'Spotity',
                 imagePath: 'Assets/image_not_found.jpg',
                 isButtonPlay: false,
-                expandedHeight: MediaQuery.of(context).size.height * 0.7,
+                expandedHeight: MediaQuery.of(context).size.height * 0.2,
               ),
               SliverGrid(
                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(

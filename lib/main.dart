@@ -10,7 +10,7 @@ import 'package:sound_machines/feature/auth/ui/login_screen.dart';
 import 'package:sound_machines/feature/auth/ui/registration_second_screen.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
 import 'package:sound_machines/feature/search_screen/bloc/playlists_cubit.dart';
-import 'package:sound_machines/feature/search_screen/data/playlist_repository.dart';
+import 'package:sound_machines/feature/search_screen/data/playlists_repository.dart';
 import 'package:sound_machines/servise/auth_service.dart';
 import 'package:sound_machines/feature/auth/ui/welcome_screen.dart';
 import 'package:sound_machines/servise/custom_bloc_observer.dart';
@@ -122,6 +122,7 @@ class MyBlocProviders extends StatelessWidget {
       BlocProvider(
         create: (_) => PlayerBloc(
           playerRepository: RepositoryProvider.of<PlayerRepository>(context),
+          playlistRepository: RepositoryProvider.of<PlaylistRepository>(context),
         )..add(PlayerSubscribe()),
         lazy: false,
       ),

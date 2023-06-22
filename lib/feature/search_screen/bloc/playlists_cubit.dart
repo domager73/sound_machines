@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:sound_machines/utils/constants.dart';
 
-import '../data/playlist_repository.dart';
+import '../data/playlists_repository.dart';
 
 part 'playlists_state.dart';
 
