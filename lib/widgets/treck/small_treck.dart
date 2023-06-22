@@ -10,8 +10,10 @@ import '../../utils/fonts.dart';
 
 class SmallTrekScreen extends StatefulWidget {
   final Track track;
+  final bool notInPlaylist;
 
-  const SmallTrekScreen({super.key, required this.track});
+  const SmallTrekScreen(
+      {super.key, required this.track, this.notInPlaylist = false});
 
   @override
   State<SmallTrekScreen> createState() => _SmallTrekScreenState();
@@ -25,19 +27,27 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
         RepositoryProvider.of<PlaylistRepository>(context);
 
     void setPlay(int? index) {
-      if (playlistRepository.currentPlaylist == repository.currentPlayListId) {
+      if (playlistRepository.currentPlaylist == repository.currentPlayListId && repository.queue != null) {
         repository.setTrack(repository.queue![index ?? 0]);
       } else {
+        if (widget.notInPlaylist) playlistRepository.currentPlaylist = null;
         repository.setNewPlaylist(
-          playlistRepository.currentPlaylist!, playlistRepository.tracks!, index: widget.track.id);
+            playlistRepository.currentPlaylist,
+            !widget.notInPlaylist
+                ? playlistRepository.tracks!
+                : playlistRepository.mixedTracks!,
+            index: widget.track.id);
+        setState(() {
+          widget.track.isPlay = true;
+        });
       }
     }
 
     return Container(
       decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
+
           color: widget.track.isPlay
-              ? AppColors.playerBackgroundColor
+              ? AppColors.currentTrackColor
               : AppColors.blackColor),
       width: MediaQuery.of(context).size.width,
       child: Padding(
@@ -69,9 +79,6 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
               ),
               onTap: () {
                 setPlay(widget.track.id);
-                print('-------------------------------');
-                print(repository.trackData!.name);
-                print('-------------------------------');
               },
             ),
             const InkWell(

@@ -18,12 +18,14 @@ class PlaylistRepository {
   String? currentPlaylist;
   List<Playlist>? playlists;
   List<Track>? tracks;
+  List<Track>? mixedTracks;
   Playlist? playlistData;
 
   void loadPlaylists() async {
     playlistsLoadingState.add(LoadingStateEnum.loading);
     try {
       playlists = await musicService.loadPlaylists();
+      mixedTracks = await musicService.getAllTracks();
       playlistsLoadingState.add(LoadingStateEnum.success);
     } catch (e) {
       playlistsLoadingState.add(LoadingStateEnum.fail);

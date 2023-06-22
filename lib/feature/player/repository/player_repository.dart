@@ -133,7 +133,7 @@ class PlayerRepository {
     });
   }
 
-  void setNewPlaylist(String playlistId, List<Track> newQueue, {int index = 0}) async {
+  void setNewPlaylist(String? playlistId, List<Track> newQueue, {int index = 0}) async {
     queue = newQueue;
     final track = queue![index];
     currentTrack = track.id;
