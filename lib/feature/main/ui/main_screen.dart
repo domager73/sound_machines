@@ -34,7 +34,6 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final repository = RepositoryProvider.of<PlayerRepository>(context);
-
     return WillPopScope(
       child: Scaffold(
         body: StreamBuilder(
@@ -43,7 +42,7 @@ class _MainScreenState extends State<MainScreen> {
             return Stack(
               children: [
                 _widgetOptions[_selectedTab],
-                repository.trackData != null ? StaticPLayer(track: repository.trackData!) : Container(),
+                repository.trackData != null ? const StaticPLayer() : Container(),
               ],
             );
           }

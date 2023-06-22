@@ -17,6 +17,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
   Widget build(BuildContext context) {
     BlocProvider.of<PlayerBloc>(context).add(InitialLoadEvent());
     final repository = RepositoryProvider.of<PlayerRepository>(context);
+
     return BlocBuilder<PlayerBloc, PlayerBlocState>(
       builder: (context, state) {
         if (state is TrackLoadedState) {

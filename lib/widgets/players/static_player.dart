@@ -3,14 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
 
 import '../../feature/player/ui/player_screen.dart';
-import '../../models/track.dart';
 import '../../utils/colors.dart';
 import '../../utils/fonts.dart';
 
 class StaticPLayer extends StatefulWidget {
-  final Track track;
-
-  const StaticPLayer({super.key, required this.track});
+  const StaticPLayer({super.key});
 
   @override
   State<StaticPLayer> createState() => _StaticPLayerState();
@@ -39,8 +36,8 @@ class _StaticPLayerState extends State<StaticPLayer> {
                 child: Row(
                   children: [
                     Image(
-                      image: widget.track.imageUrl.isNotEmpty
-                          ? NetworkImage(widget.track.imageUrl)
+                      image: repository.trackData!.imageUrl.isNotEmpty
+                          ? NetworkImage(repository.trackData!.imageUrl)
                           : const AssetImage('Assets/image_not_found.jpg')
                               as ImageProvider,
                       width: 50,
@@ -50,7 +47,7 @@ class _StaticPLayerState extends State<StaticPLayer> {
                       padding: const EdgeInsets.only(left: 10),
                       width: MediaQuery.of(context).size.width - 160,
                       child: Text(
-                        widget.track.name,
+                        repository.trackData!.name,
                         style: AppTypography.font20fff,
                       ),
                     ),
@@ -68,27 +65,15 @@ class _StaticPLayerState extends State<StaticPLayer> {
                   size: 25,
                 ),
               ),
-              StreamBuilder(
-                stream: repository.playerStream,
-                builder: (context, snapshot) {
-                  return InkWell(
-                    onTap: () async {
-                      repository.isPlaying
-                          ? await repository.audioPlayer.pause()
-                          : await repository.audioPlayer.resume();
+              InkWell(
+                onTap: () {
 
-                      repository.trackData!.setIsPlay(!repository.isPlaying);
-
-                      setState(() {
-                      });
-                    },
-                    child: Icon(
-                      repository.isPlaying ? Icons.pause : Icons.play_arrow,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                  );
-                }
+                },
+                child: const Icon(
+                  Icons.play_arrow,
+                  color: Colors.white,
+                  size: 30,
+                ),
               ),
             ],
           ),
@@ -101,7 +86,7 @@ class _StaticPLayerState extends State<StaticPLayer> {
 Route _createRoute() {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) =>
-        const PlayerScreen(),
+    const PlayerScreen(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;
