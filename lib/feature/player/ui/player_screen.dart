@@ -16,7 +16,6 @@ class PlayerScreen extends StatefulWidget {
 class _PlayerScreenState extends State<PlayerScreen> {
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<PlayerBloc>(context).add(InitialLoadEvent());
     final repository = RepositoryProvider.of<PlayerRepository>(context);
     return BlocBuilder<PlayerBloc, PlayerBlocState>(
       builder: (context, state) {

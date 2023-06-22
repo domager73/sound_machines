@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sound_machines/feature/player/bloc/player_bloc.dart';
+import 'package:sound_machines/feature/player/repository/player_repository.dart';
 import 'package:sound_machines/utils/fonts.dart';
 
 import '../../utils/colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppBarWidget extends StatelessWidget {
   final String text;
@@ -19,6 +22,8 @@ class AppBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final repository = RepositoryProvider.of<PlayerRepository>(context);
+
     return SliverAppBar(
       title: Text(
         text,
@@ -31,37 +36,44 @@ class AppBarWidget extends StatelessWidget {
       elevation: 0,
       flexibleSpace:FlexibleSpaceBar(
         collapseMode: CollapseMode.pin,
-        background: Container(
-          padding: const EdgeInsets.only(bottom: 15),
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(imagePath),
-              repeat: ImageRepeat.repeat
-            ),
-          ),
-          child: isButtonPlay ? Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        background: StreamBuilder(
+          stream: repository.playerStream,
+          builder: (context, snapshot) {
+            return Container(
+              padding: const EdgeInsets.only(bottom: 15),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(imagePath),
+                  repeat: ImageRepeat.repeat
+                ),
+              ),
+              child: !repository.isPlaying ? Column(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Column(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      InkWell(
-                        child: const Icon(
-                          Icons.play_circle,
-                          size: 100,
-                          color: AppColors.playColor,
-                        ),
-                        onTap: () {},
+                      Column(
+                        children: [
+                          InkWell(
+                            child: const Icon(
+                              Icons.play_circle,
+                              size: 100,
+                              color: AppColors.playColor,
+                            ),
+                            onTap: () {
+                              repository.setTrack(repository.queue![0]);
+                            },
+                          ),
+                          const Text('Слушать', style: AppTypography.font16fff,),
+                        ],
                       ),
-                      Text('пауза', style: AppTypography.font16fff,),
                     ],
-                  ),
+                  )
                 ],
-              )
-            ],
-          ) : Container(),
+              ) : Container(),
+            );
+          }
         ),
       )
     );

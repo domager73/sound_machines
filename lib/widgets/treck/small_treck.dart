@@ -58,7 +58,6 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
                 print('-------------------------------');
                 print(repository.trackData!.name);
                 print('-------------------------------');
-                Navigator.of(context).push(_createRoute());
               },
             ),
             const InkWell(

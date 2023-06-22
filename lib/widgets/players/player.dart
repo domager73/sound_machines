@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iconify_flutter/iconify_flutter.dart';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -136,11 +135,8 @@ class _CustomPlayerState extends State<CustomPlayer> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               InkWell(
-                                child: Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                ),
-                                onTap: () {},
+                                child: Image.asset('Assets/skip_15_prev.png', width: 24, height: 24,),
+                                onTap: () async {repository.seek15previous();},
                               ),
                               InkWell(
                                 onTap: () async {
@@ -183,11 +179,8 @@ class _CustomPlayerState extends State<CustomPlayer> {
                                 ),
                               ),
                               InkWell(
-                                child: Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                ),
-                                onTap: () {},
+                                child: Image.asset('Assets/skip_15_next.png', width: 24, height: 24,),
+                                onTap: () {repository.seek15next();},
                               ),
                             ],
                           ),
