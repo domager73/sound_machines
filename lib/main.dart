@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,8 +7,6 @@ import 'package:sound_machines/feature/auth/data/auth_repository.dart';
 import 'package:sound_machines/feature/auth/ui/login_screen.dart';
 import 'package:sound_machines/feature/auth/ui/registration_second_screen.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
-import 'package:sound_machines/feature/search_screen/bloc/playlists_cubit.dart';
-import 'package:sound_machines/feature/search_screen/data/playlists_repository.dart';
 import 'package:sound_machines/servise/auth_service.dart';
 import 'package:sound_machines/feature/auth/ui/welcome_screen.dart';
 import 'package:sound_machines/servise/custom_bloc_observer.dart';
@@ -23,10 +19,11 @@ import 'package:sound_machines/utils/colors.dart';
 
 import 'bloc/app_bloc.dart';
 import 'feature/auth/ui/registration_first_screen.dart';
+import 'feature/home_screen/bloc/playlists_cubit.dart';
+import 'feature/home_screen/data/playlists_repository.dart';
+import 'feature/home_screen/ui/search_screen.dart';
 import 'feature/main/ui/main_screen.dart';
 import 'feature/player/bloc/player_bloc.dart';
-import 'feature/player/ui/player_screen.dart';
-import 'feature/search_screen/ui/search_screen.dart';
 import 'firebase_options.dart';
 
 
@@ -72,7 +69,7 @@ class _MyAppState extends State<MyApp> {
         '/login_screen' : (context) => const LoginScreen(),
         '/register_first_screen' : (context) => const RegisterFirstScreen(),
         '/register_second_screen' : (context) => const RegisterSecondScreen(),
-        '/search_music' : (context) => const SearchScreen(),
+        '/homa_screen' : (context) => const HomeScreen()
       },
       home: const HomePage(),
     );

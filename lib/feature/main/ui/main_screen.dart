@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sound_machines/feature/home_screen/ui/search_screen.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
 import 'package:sound_machines/feature/player/ui/player_screen.dart';
 import 'package:sound_machines/utils/fonts.dart';
@@ -7,7 +8,6 @@ import 'package:sound_machines/widgets/players/static_player.dart';
 
 import '../../../utils/colors.dart';
 import '../../playlist/ui/playlist_screen.dart';
-import '../../search_screen/ui/search_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -18,8 +18,8 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final List<Widget> _widgetOptions = <Widget>[
+    const HomeScreen(),
     const PlayListScreen(),
-    const SearchScreen(),
   ];
 
   int _selectedTab = 0;
