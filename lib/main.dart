@@ -7,6 +7,8 @@ import 'package:sound_machines/feature/auth/data/auth_repository.dart';
 import 'package:sound_machines/feature/auth/ui/login_screen.dart';
 import 'package:sound_machines/feature/auth/ui/registration_second_screen.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
+import 'package:sound_machines/feature/search/bloc/search_cubit.dart';
+import 'package:sound_machines/feature/search/repository/search_repository.dart';
 import 'package:sound_machines/servise/auth_service.dart';
 import 'package:sound_machines/feature/auth/ui/welcome_screen.dart';
 import 'package:sound_machines/servise/custom_bloc_observer.dart';
@@ -21,12 +23,10 @@ import 'bloc/app_bloc.dart';
 import 'feature/auth/ui/registration_first_screen.dart';
 import 'feature/home_screen/bloc/playlists_cubit.dart';
 import 'feature/home_screen/data/playlists_repository.dart';
-import 'feature/home_screen/ui/search_screen.dart';
+import 'feature/home_screen/ui/homa_screen.dart';
 import 'feature/main/ui/main_screen.dart';
 import 'feature/player/bloc/player_bloc.dart';
 import 'firebase_options.dart';
-
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,11 +65,11 @@ class _MyAppState extends State<MyApp> {
       ),
       color: const Color(0xff292B57),
       routes: {
-        '/welcome_screen' : (context) => const WelcomeScreen(),
-        '/login_screen' : (context) => const LoginScreen(),
-        '/register_first_screen' : (context) => const RegisterFirstScreen(),
-        '/register_second_screen' : (context) => const RegisterSecondScreen(),
-        '/homa_screen' : (context) => const HomeScreen()
+        '/welcome_screen': (context) => const WelcomeScreen(),
+        '/login_screen': (context) => const LoginScreen(),
+        '/register_first_screen': (context) => const RegisterFirstScreen(),
+        '/register_second_screen': (context) => const RegisterSecondScreen(),
+        '/homa_screen': (context) => const HomeScreen()
       },
       home: const HomePage(),
     );
@@ -92,7 +92,9 @@ class MyRepositoryProviders extends StatelessWidget {
       RepositoryProvider(
           create: (_) => PlaylistRepository(musicService: musicService)),
       RepositoryProvider(
-          create: (_) => PlayerRepository(musicService: musicService))
+          create: (_) => PlayerRepository(musicService: musicService)),
+      RepositoryProvider(
+          create: (_) => SearchRepository(musicService: musicService))
     ], child: const MyBlocProviders());
   }
 }
@@ -119,17 +121,22 @@ class MyBlocProviders extends StatelessWidget {
       BlocProvider(
         create: (_) => PlayerBloc(
           playerRepository: RepositoryProvider.of<PlayerRepository>(context),
-          playlistRepository: RepositoryProvider.of<PlaylistRepository>(context),
+          playlistRepository:
+              RepositoryProvider.of<PlaylistRepository>(context),
         )..add(PlayerSubscribe()),
         lazy: false,
       ),
       BlocProvider(
+          lazy: false,
+          create: (_) => PlaylistsCubit(
+                playlistRepository:
+                    RepositoryProvider.of<PlaylistRepository>(context),
+              )),
+      BlocProvider(
         lazy: false,
-        create: (_) => PlaylistsCubit(
-          playlistRepository: RepositoryProvider.of<PlaylistRepository>(context),
-        )
+        create: (_) => SearchCubit(
+            searchRepository: RepositoryProvider.of<SearchRepository>(context)),
       ),
-
     ], child: MyApp());
   }
 }

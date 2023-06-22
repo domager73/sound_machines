@@ -11,6 +11,7 @@ class AppBarWidget extends StatelessWidget {
   final String imagePath;
   final bool isButtonPlay;
   final double expandedHeight;
+  final bool isPlayList;
 
   const AppBarWidget({
     Key? key,
@@ -18,6 +19,7 @@ class AppBarWidget extends StatelessWidget {
     required this.imagePath,
     required this.isButtonPlay,
     required this.expandedHeight,
+    required this.isPlayList,
   }) : super(key: key);
 
   @override
@@ -44,10 +46,10 @@ class AppBarWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(imagePath),
-                  repeat: ImageRepeat.repeat
+                  fit: BoxFit.cover
                 ),
               ),
-              child: !repository.isPlaying ? Column(
+              child: !repository.isPlaying && isPlayList ? Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Row(

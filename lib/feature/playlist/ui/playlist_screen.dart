@@ -28,6 +28,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                   text: 'Супер плейлист',
                   imagePath: 'Assets/obl_pllist.webp',
                   isButtonPlay: true,
+                  isPlayList: true,
                   expandedHeight: MediaQuery.of(context).size.height * 0.4,
                 ),
                 StreamBuilder(

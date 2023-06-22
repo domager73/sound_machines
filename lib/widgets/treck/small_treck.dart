@@ -55,9 +55,6 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
               ),
               onTap: () {
                 repository.setTrack(widget.track);
-                print('-------------------------------');
-                print(repository.trackData!.name);
-                print('-------------------------------');
               },
             ),
             const InkWell(

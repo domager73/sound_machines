@@ -30,8 +30,9 @@ class _HomeScreenState extends State<HomeScreen> {
               AppBarWidget(
                 text: 'Spotity',
                 imagePath: 'Assets/image_not_found.jpg',
-                isButtonPlay: false,
-                expandedHeight: MediaQuery.of(context).size.height * 0.2,
+                isButtonPlay: true,
+                isPlayList: false,
+                expandedHeight: MediaQuery.of(context).size.height * 0.7,
               ),
               SliverToBoxAdapter(
                 child: Container(
