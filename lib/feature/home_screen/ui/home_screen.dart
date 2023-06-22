@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sound_machines/utils/fonts.dart';
-import 'package:sound_machines/widgets/sliverAppBar/sliver_playlistContainer.dart';
+import 'package:sound_machines/widgets/slivers/sliver_playlistContainer.dart';
 
-import '../../../widgets/sliverAppBar/sliver_appBar.dart';
+import '../../../widgets/slivers/sliver_appBar.dart';
+import '../../../widgets/treck/small_treck.dart';
+import '../../player/repository/player_repository.dart';
 import '../bloc/playlists_cubit.dart';
 import '../data/playlists_repository.dart';
 

@@ -6,7 +6,7 @@ import 'package:sound_machines/feature/search/repository/search_repository.dart'
 import '../../../models/track.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/fonts.dart';
-import '../../../widgets/sliverAppBar/sliver_playlistContainer.dart';
+import '../../../widgets/slivers/sliver_playlistContainer.dart';
 import '../../../widgets/text_field/custom_text_field.dart';
 import '../../../widgets/text_field/dynamic_text_field.dart';
 import '../../../widgets/treck/small_treck.dart';

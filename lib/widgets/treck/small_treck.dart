@@ -27,7 +27,8 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
         RepositoryProvider.of<PlaylistRepository>(context);
 
     void setPlay(int? index) {
-      if (playlistRepository.currentPlaylist == repository.currentPlayListId && repository.queue != null) {
+      if (playlistRepository.currentPlaylist == repository.currentPlayListId &&
+          repository.queue != null) {
         repository.setTrack(repository.queue![index ?? 0]);
       } else {
         if (widget.notInPlaylist) playlistRepository.currentPlaylist = null;
@@ -45,7 +46,6 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
 
     return Container(
       decoration: BoxDecoration(
-
           color: widget.track.isPlay
               ? AppColors.currentTrackColor
               : AppColors.blackColor),
@@ -59,13 +59,16 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
             InkWell(
               child: Row(
                 children: [
-                  Image(
-                    image: widget.track.imageUrl == ''
-                        ? const AssetImage('Assets/image_not_found.jpg')
-                            as ImageProvider
-                        : NetworkImage(widget.track.imageUrl),
-                    height: 50,
+                  Container(
                     width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: widget.track.imageUrl == ''
+                                ? const AssetImage('Assets/image_not_found.jpg')
+                                    as ImageProvider
+                                : NetworkImage(widget.track.imageUrl),
+                            fit: BoxFit.cover)),
                   ),
                   Container(
                     padding: const EdgeInsets.only(left: 10),
@@ -88,15 +91,6 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
                 size: 25,
               ),
             ),
-            // InkWell(
-            //   onTap: () {
-            //   },
-            //   child: Icon(
-            //     widget.track.isPlay ? Icons.pause : Icons.play_arrow,
-            //     color: Colors.white,
-            //     size: 30,
-            //   ),
-            // ),
           ],
         ),
       ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sound_machines/feature/home_screen/data/playlists_repository.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
-import '../../../widgets/sliverAppBar/sliver_appBar.dart';
+import '../../../widgets/slivers/sliver_appBar.dart';
 import '../../../widgets/treck/small_treck.dart';
 import '../../home_screen/bloc/playlist_tracks_cubit.dart';
 import '../../player/bloc/player_bloc.dart';
