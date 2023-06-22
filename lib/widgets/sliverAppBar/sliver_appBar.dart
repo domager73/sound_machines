@@ -16,21 +16,21 @@ class AppBarWidget extends StatelessWidget {
   final bool canBack;
   final bool isPlayList;
 
-  const AppBarWidget({
-    Key? key,
-    required this.text,
-    required this.imagePath,
-    required this.isButtonPlay,
-    required this.expandedHeight,
-    this.canBack = false,
-    required this.isPlayList
-  }) : super(key: key);
+  const AppBarWidget(
+      {Key? key,
+      required this.text,
+      required this.imagePath,
+      required this.isButtonPlay,
+      required this.expandedHeight,
+      this.canBack = false,
+      this.isPlayList = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final repository = RepositoryProvider.of<PlayerRepository>(context);
     final playlistRepository =
-    RepositoryProvider.of<PlaylistRepository>(context);
+        RepositoryProvider.of<PlaylistRepository>(context);
 
     void playAndPause() async {
       if (repository.currentPlayListId != playlistRepository.currentPlaylist) {
@@ -46,11 +46,17 @@ class AppBarWidget extends StatelessWidget {
     return SliverAppBar(
         title: Row(
           children: [
-            canBack ? IconButton(onPressed: () {
-              BlocProvider.of<NavigationCubit>(context).viewMain();
-            },
-                icon: const Icon(
-                  Icons.arrow_back, color: Colors.white, size: 25,)) : Container(),
+            canBack
+                ? IconButton(
+                    onPressed: () {
+                      BlocProvider.of<NavigationCubit>(context).viewMain();
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 25,
+                    ))
+                : Container(),
             Text(
               text,
               style: AppTypography.font32fff,
@@ -64,96 +70,73 @@ class AppBarWidget extends StatelessWidget {
         elevation: 0,
         flexibleSpace: FlexibleSpaceBar(
           collapseMode: CollapseMode.pin,
-          background: StreamBuilder(
-            stream: repository.playlistChanges,
-            builder: (context, snapshot) =>
-            repository.currentPlayListId ==
-                playlistRepository.currentPlaylist
-                ? StreamBuilder(
-                stream: repository.playerStream,
-                builder: (context, snapshot) {
-                  return Container(
-                      padding: const EdgeInsets.only(bottom: 15),
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: imagePath.contains('Assets/')
-                                ? AssetImage(imagePath)
-                                : NetworkImage(imagePath) as ImageProvider,
-                            fit: BoxFit.cover),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Column(
-                                children: [
-                                  InkWell(
-                                    child: !repository.isPlaying
-                                        ? const Icon(
-                                      Icons.play_circle,
-                                      size: 100,
-                                      color: AppColors.playColor,
-                                    )
-                                        : const Icon(
-                                      Icons.pause_circle,
-                                      size: 100,
-                                      color: AppColors.playColor,
-                                    ),
-                                    onTap: () {
-                                      playAndPause();
-                                    },
-                                  ),
-                                  const Text(
-                                    'Слушать',
-                                    style: AppTypography.font16fff,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )
-                        ],
-                      ));
-                })
-                : Container(
-                padding: const EdgeInsets.only(bottom: 15),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: imagePath.contains('Assets/')
-                          ? AssetImage(imagePath)
-                          : NetworkImage(imagePath) as ImageProvider,
-                      fit: BoxFit.cover),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+          background: Container(
+              padding: const EdgeInsets.only(bottom: 15),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: imagePath.contains('Assets/')
+                        ? AssetImage(imagePath)
+                        : NetworkImage(imagePath) as ImageProvider,
+                    fit: BoxFit.cover),
+              ),
+              child: isPlayList
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Column(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            InkWell(
-                              child: const Icon(
-                                Icons.play_circle,
-                                size: 100,
-                                color: AppColors.playColor,
-                              ),
-                              onTap: () {
-                                playAndPause();
-                              },
-                            ),
-                            const Text(
-                              'Слушать',
-                              style: AppTypography.font16fff,
-                            ),
+                            repository.currentPlayListId ==
+                                    playlistRepository.currentPlaylist
+                                ? StreamBuilder(
+                                    stream: repository.playerStream,
+                                    builder: (context, snapshot) {
+                                      return Column(children: [
+                                        InkWell(
+                                          child: !repository.isPlaying
+                                              ? const Icon(
+                                                  Icons.play_circle,
+                                                  size: 100,
+                                                  color: AppColors.playColor,
+                                                )
+                                              : const Icon(
+                                                  Icons.pause_circle,
+                                                  size: 100,
+                                                  color: AppColors.playColor,
+                                                ),
+                                          onTap: () {
+                                            playAndPause();
+                                          },
+                                        ),
+                                        Text(
+                                          !repository.isPlaying
+                                              ? 'Слушать'
+                                              : 'Пауза',
+                                          style: AppTypography.font16fff,
+                                        ),
+                                      ]);
+                                    })
+                                : Column(
+                                    children: [
+                                      InkWell(
+                                        onTap: playAndPause,
+                                        child: const Icon(
+                                          Icons.play_circle,
+                                          size: 100,
+                                          color: AppColors.playColor,
+                                        ),
+                                      ),
+                                      const Text(
+                                        'Слушать',
+                                        style: AppTypography.font16fff,
+                                      ),
+                                    ],
+                                  )
                           ],
-                        ),
+                        )
                       ],
                     )
-                  ],
-                )),
-          ),
+                  : Container()),
         ));
   }
 }
