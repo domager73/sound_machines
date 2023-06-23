@@ -7,8 +7,8 @@ import 'package:sound_machines/models/playlist.dart';
 
 import '../models/track.dart';
 
-
-const String defaultUrl = 'https://www.chosic.com/wp-content/uploads/2022/02/storm-clouds-purpple-cat.mp3';
+const String defaultUrl =
+    'https://www.chosic.com/wp-content/uploads/2022/02/storm-clouds-purpple-cat.mp3';
 
 class MusicService {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -30,14 +30,16 @@ class MusicService {
   void uploadNewTrack(File? file, File? image, String name) async {
     final id = await getIdForNewTrack();
 
-    final String audioUrl = file != null ? await uploadAudio(file, id) : defaultUrl;
+    final String audioUrl =
+        file != null ? await uploadAudio(file, id) : defaultUrl;
     final String imageUrl = image != null ? await uploadImage(image, id) : '';
 
-    await addData(id, {'audioUrl': audioUrl, 'imageUrl': imageUrl, 'name': name});
+    await addData(
+        id, {'audioUrl': audioUrl, 'imageUrl': imageUrl, 'name': name});
   }
 
   void createManyTracks(int count) {
-    for (var i = 0; i < count; i ++) {
+    for (var i = 0; i < count; i++) {
       uploadNewTrack(null, null, 'test $i');
     }
   }
@@ -52,29 +54,27 @@ class MusicService {
     return await child.putFile(image).then((p0) => child.getDownloadURL());
   }
 
-  // Future<Track> getLastTrack() async {
-  //   final collection = await firestore.collection('musics').get();
-  //   final trackData = collection.docs.last.data();
-  //   return Track(name: trackData['name'], audioUrl: trackData['audioUrl'], imageUrl: trackData['imageUrl'], isPlay: false);
-  // }
-
   Future<List<Track>> getAllTracks({int limit = 20}) async {
     final collection = await firestore.collection('musics').limit(limit).get();
     List<Track> tracks = [];
 
-    int count = 0;
+    int ind = 0;
     for (var i in collection.docs) {
-      tracks.add(Track(name: i.data()['name'], audioUrl: i.data()['audioUrl'], imageUrl: i.data()['imageUrl'], isPlay: false, id: count));
-      count++;
+      tracks.add(trackFromDoc(i, ind));
+      ind++;
     }
 
     return tracks;
   }
 
-  void test() async {
-    final doc = await firestore.collection('musics').doc('841jl2ijfbZHalZdjgEY').get();
-    print(doc.exists);
-  }
+  Track trackFromDoc(DocumentSnapshot<Map<String, dynamic>> doc, int withId) =>
+      Track(
+          name: doc.data()!['name'],
+          audioUrl: doc.data()!['audioUrl'],
+          imageUrl: doc.data()!['imageUrl'],
+          isPlay: false,
+          id: withId,
+          firebaseId: doc.id);
 
   Future<List<Track>> getPlaylistTracks(String id) async {
     final playlist = await firestore.collection('playlists').doc(id).get();
@@ -83,27 +83,23 @@ class MusicService {
     List<Track> tracks = [];
     int n = 0;
     for (var i in tracksIds) {
-      print(i);
       final doc = await firestore.collection('musics').doc(i.trim()).get();
-      print(doc.exists);
-
-        tracks.add(Track(name: doc.data()!['name'], audioUrl: doc.data()!['audioUrl'], imageUrl: doc.data()!['imageUrl'], isPlay: false, id: n),);
-        n++;
-
+      tracks.add(trackFromDoc(doc, n));
+      n++;
     }
 
     return tracks;
   }
-  
+
   Future<List<Playlist>> loadPlaylists() async {
     final collection = await firestore.collection('playlists').get();
     List<Playlist> playlists = [];
 
     for (var i in collection.docs) {
-      playlists.add(Playlist(name: i.data()['name'], imageUrl: i.data()['imageUrl'], id: i.id));
+      playlists.add(Playlist(
+          name: i.data()['name'], imageUrl: i.data()['imageUrl'], id: i.id));
     }
 
     return playlists;
   }
-
 }

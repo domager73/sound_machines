@@ -1,4 +1,6 @@
 import 'package:rxdart/rxdart.dart';
+import 'package:sound_machines/feature/home_screen/data/playlists_repository.dart';
+import 'package:sound_machines/feature/player/repository/player_repository.dart';
 import 'package:sound_machines/utils/constants.dart';
 
 import '../../../models/playlist.dart';
@@ -23,6 +25,16 @@ class SearchRepository {
 
   void loadPlayList() async {
     playLists = await musicService.loadPlaylists();
+  }
+
+  List<Track> getCurrentQueue(
+      {String type = PlaylistRepository.searchScreenTracksId,
+      required Track? playingTrack}) {
+    if (type == PlaylistRepository.searchScreenTracksId) {
+      return playingTrack != null ? PlaylistRepository.markPlayedTracks(playingTrack, searchTracks ?? []) : searchTracks ?? [];
+    } else {
+      return [];
+    }
   }
 
   void initialLoadTracks() async {

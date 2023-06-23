@@ -38,13 +38,13 @@ class _StaticPLayerState extends State<StaticPLayer> {
                   InkWell(
                     child: Row(
                       children: [
-                        Image(
-                          image: repository.trackData!.imageUrl.isNotEmpty
+                        Container(
+                          width: 47,
+                          height: 47,
+                          decoration: BoxDecoration(image: DecorationImage(image: repository.trackData!.imageUrl.isNotEmpty
                               ? NetworkImage(repository.trackData!.imageUrl)
                               : const AssetImage('Assets/image_not_found.jpg')
-                                  as ImageProvider,
-                          width: 50,
-                          height: 50,
+                          as ImageProvider, fit: BoxFit.cover)),
                         ),
                         Container(
                           padding: const EdgeInsets.only(left: 10),

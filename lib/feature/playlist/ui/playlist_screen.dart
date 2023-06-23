@@ -21,6 +21,17 @@ class _PlayListScreenState extends State<PlayListScreen> {
     final playlistRepository =
         RepositoryProvider.of<PlaylistRepository>(context);
 
+    void setPlay(int index) {
+      if (playlistRepository.currentPlaylist == repository.currentPlayListId) {
+        repository.setTrack(repository.queue![index]);
+      } else {
+        repository.setNewPlaylist(
+            playlistRepository.currentPlaylist,
+            playlistRepository.tracks!,
+            index: index);
+      }
+    }
+
     return BlocBuilder<PlaylistTracksCubit, PlaylistTracksState>(
       builder: (context, state) {
         if (state is PlaylistTracksSuccessState) {
@@ -39,34 +50,18 @@ class _PlayListScreenState extends State<PlayListScreen> {
                   expandedHeight: MediaQuery.of(context).size.height * 0.4,
                 ),
                 StreamBuilder(
-                  stream: repository.playlistChanges,
-                  builder: (context, snapshot) {
-                    if (snapshot.data == playlistRepository.currentPlaylist) {
-                      return StreamBuilder(
-                          stream: repository.trackChanges,
-                          initialData: repository.queue!,
-                          builder: (context, snapshot) {
-                            return SliverFixedExtentList(
-                              delegate: SliverChildListDelegate(snapshot.data!
-                                  .map((e) => SmallTrekScreen(
-                                        track: e,
-                                      ))
-                                  .toList()),
-                              itemExtent: 60,
-                            );
-                          });
-                    } else {
-                      return SliverFixedExtentList(
+                  stream: repository.playerStream,
+                  builder: (context, snapshot) =>
+                      SliverFixedExtentList(
                         delegate:
-                            SliverChildListDelegate(playlistRepository.tracks!
-                                .map((e) => SmallTrekScreen(
-                                      track: e,
-                                    ))
-                                .toList()),
+                        SliverChildListDelegate(playlistRepository.getCurrentQueue(playingTrack: repository.trackData)
+                            .map((e) => SmallTrekScreen(
+                          track: e,
+                          onTap: setPlay,
+                        ))
+                            .toList()),
                         itemExtent: 60,
-                      );
-                    }
-                  },
+                      )
                 ),
               ],
             ),

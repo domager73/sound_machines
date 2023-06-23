@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sound_machines/feature/home_screen/data/playlists_repository.dart';
@@ -10,10 +12,11 @@ import '../../utils/fonts.dart';
 
 class SmallTrekScreen extends StatefulWidget {
   final Track track;
-  final bool notInPlaylist;
+  final Function(int) onTap;
+  final int? customId;
 
   const SmallTrekScreen(
-      {super.key, required this.track, this.notInPlaylist = false});
+      {super.key, required this.track, required this.onTap, this.customId});
 
   @override
   State<SmallTrekScreen> createState() => _SmallTrekScreenState();
@@ -25,24 +28,6 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
     final repository = RepositoryProvider.of<PlayerRepository>(context);
     final playlistRepository =
         RepositoryProvider.of<PlaylistRepository>(context);
-
-    void setPlay(int? index) {
-      if (playlistRepository.currentPlaylist == repository.currentPlayListId &&
-          repository.queue != null) {
-        repository.setTrack(repository.queue![index ?? 0]);
-      } else {
-        if (widget.notInPlaylist) playlistRepository.currentPlaylist = null;
-        repository.setNewPlaylist(
-            playlistRepository.currentPlaylist,
-            !widget.notInPlaylist
-                ? playlistRepository.tracks!
-                : playlistRepository.mixedTracks!,
-            index: widget.track.id);
-        setState(() {
-          widget.track.isPlay = true;
-        });
-      }
-    }
 
     return Container(
       decoration: BoxDecoration(
@@ -81,7 +66,11 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
                 ],
               ),
               onTap: () {
-                setPlay(widget.track.id);
+                print(widget.customId ?? widget.track.id);
+                widget.onTap(widget.customId ?? widget.track.id);
+                setState(() {
+                  widget.track.isPlay = true;
+                });
               },
             ),
             const InkWell(

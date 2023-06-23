@@ -4,15 +4,13 @@ class Track {
   String audioUrl;
   bool isPlay;
   int id;
+  String firebaseId;
 
   Track(
       {required this.name,
       required this.audioUrl,
       required this.imageUrl,
       required this.isPlay,
-      required this.id});
-
-  void setIsPlay(bool _isPLay){
-    isPlay = _isPLay;
-  }
+      required this.id,
+      required this.firebaseId});
 }

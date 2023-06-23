@@ -134,15 +134,15 @@ class PlayerRepository {
     });
   }
 
-  void setNewPlaylist(String? playlistId, List<Track> newQueue,
+  Future setNewPlaylist(String? playlistId, List<Track> newQueue,
       {int index = 0}) async {
     queue = newQueue;
     trackChanges.add(queue!);
     currentPlayListId = playlistId;
     final track = queue![index];
-    currentTrack = track.id;
-    trackData = queue?[track.id];
-    queue?[track.id].isPlay = true;
+    currentTrack = index;
+    trackData = queue?[index];
+    queue?[index].isPlay = true;
 
     trackStreamData = TrackData(
         timeData:
@@ -166,12 +166,12 @@ class PlayerRepository {
     }
   }
 
-  Future setTrack(Track track, {bool f = true}) async {
-    if (trackData?.id != track.id) {
+  Future setTrack(Track track, {bool f = true, int? customId}) async {
+    if (trackData?.id != (customId ?? track.id)) {
       queue?[currentTrack].isPlay = false;
-      currentTrack = track.id;
-      trackData = queue?[track.id];
-      queue?[track.id].isPlay = true;
+      currentTrack = customId ?? track.id;
+      trackData = queue?[currentTrack];
+      queue?[currentTrack].isPlay = true;
       trackChanges.add(queue!);
       trackStreamData = TrackData(
           timeData:

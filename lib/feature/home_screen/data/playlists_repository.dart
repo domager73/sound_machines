@@ -8,6 +8,10 @@ import '../../../models/track.dart';
 class PlaylistRepository {
   final MusicService musicService;
 
+  static const homeScreenMixedTracksId = 'mixedTracks';
+  static const searchScreenTracksId = 'searchTracks';
+  static const playlistScreenTracksId = 'playlistTracks';
+
   PlaylistRepository({required this.musicService});
 
   BehaviorSubject<LoadingStateEnum> playlistsLoadingState =
@@ -17,9 +21,49 @@ class PlaylistRepository {
 
   String? currentPlaylist;
   List<Playlist>? playlists;
-  List<Track>? tracks;
-  List<Track>? mixedTracks;
+  List<Track>? tracks = [];
+  List<Track>? mixedTracks = [];
   Playlist? playlistData;
+
+  List<Track> getCurrentQueue(
+      {String type = playlistScreenTracksId, required Track? playingTrack}) {
+    if (type == playlistScreenTracksId) {
+      return playingTrack != null ? markPlayedTracks(playingTrack, tracks ?? []) : tracks ?? [];
+    } else if (type == homeScreenMixedTracksId) {
+      return playingTrack != null ? markPlayedTracks(playingTrack, mixedTracks ?? []) : mixedTracks ?? [];
+    } else {
+      return [];
+    }
+  }
+
+  static List<String> getTracksIds(List<Track> t) {
+    List<String> ids = [];
+    for (var i in t) {
+      ids.add(i.firebaseId);
+    }
+
+    return ids;
+  }
+
+  static List<Track> markPlayedTracks(
+      Track playingTrack, List<Track> needToMark) {
+    final List<String> currentIds = getTracksIds(needToMark);
+    needToMark = clearPlayingStates(needToMark);
+
+    if (currentIds.contains(playingTrack.firebaseId)) {
+      final ind = currentIds.indexOf(playingTrack.firebaseId);
+      needToMark[ind].isPlay = true;
+    }
+
+    return needToMark;
+  }
+
+  static List<Track> clearPlayingStates(List<Track> toClear) {
+    for (var i = 0; i < toClear.length; i++) {
+      toClear[i].isPlay = false;
+    }
+    return toClear;
+  }
 
   void loadPlaylists() async {
     playlistsLoadingState.add(LoadingStateEnum.loading);
@@ -43,13 +87,4 @@ class PlaylistRepository {
       rethrow;
     }
   }
-
-}
-
-
-class NewQueue {
-  String playlistId;
-  List<Track> tracks;
-
-  NewQueue({required this.playlistId, required this.tracks});
 }

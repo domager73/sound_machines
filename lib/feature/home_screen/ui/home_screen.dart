@@ -19,9 +19,19 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-
     final repository = RepositoryProvider.of<PlaylistRepository>(context);
     final playerRepository = RepositoryProvider.of<PlayerRepository>(context);
+
+    void setPlay(int index) async {
+      if (PlaylistRepository.homeScreenMixedTracksId == playerRepository.currentPlayListId &&
+          playerRepository.queue != null) {
+        playerRepository.setTrack(playerRepository.queue![index ?? 0]);
+      } else {
+        repository.currentPlaylist = PlaylistRepository.homeScreenMixedTracksId;
+        playerRepository.setNewPlaylist(PlaylistRepository.homeScreenMixedTracksId, repository.mixedTracks!,
+            index: index);
+      }
+    }
 
     return BlocBuilder<PlaylistsCubit, PlaylistsState>(
         builder: (context, state) {
@@ -110,38 +120,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               )),
               StreamBuilder(
-                stream: playerRepository.playlistChanges,
-                builder: (context, snapshot) => playerRepository
-                                .currentPlayListId ==
-                            null &&
-                        (playerRepository.queue ?? []).isNotEmpty
-                    ? StreamBuilder(
-                        stream: playerRepository.trackChanges,
-                        builder: (context, snapshot) {
-                          return SliverFixedExtentList(
-                            delegate: SliverChildListDelegate(
-                                RepositoryProvider.of<PlaylistRepository>(
-                                        context)
-                                    .mixedTracks!
-                                    .map((e) => SmallTrekScreen(
-                                          track: e,
-                                          notInPlaylist: true,
-                                        ))
-                                    .toList()),
-                            itemExtent: 60,
-                          );
-                        })
-                    : SliverFixedExtentList(
-                        delegate: SliverChildListDelegate(
-                            RepositoryProvider.of<PlaylistRepository>(context)
-                                .mixedTracks!
-                                .map((e) => SmallTrekScreen(
-                                      track: e,
-                                      notInPlaylist: true,
-                                    ))
-                                .toList()),
-                        itemExtent: 60,
-                      ),
+                stream: playerRepository.playerStream,
+                builder: (context, snapshot) =>  SliverFixedExtentList(
+                  delegate: SliverChildListDelegate(
+                      repository.getCurrentQueue(playingTrack: playerRepository.trackData, type: PlaylistRepository.homeScreenMixedTracksId)
+                          .map((e) => SmallTrekScreen(
+                        track: e,
+                        onTap: setPlay,
+                      ))
+                          .toList()),
+                  itemExtent: 60,
+                ),
               ),
               SliverToBoxAdapter(
                 child: Container(
