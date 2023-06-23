@@ -24,7 +24,6 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   bool isSuccess = false;
-  final _searchController = TextEditingController();
   List<Track> list = [];
   bool whatSearch = true;
 
@@ -61,6 +60,9 @@ class _SearchScreenState extends State<SearchScreen> {
     }
 
     BlocProvider.of<SearchCubit>(context).initialLoadSearch();
+
+    final _searchController = TextEditingController(text: repository.textController);
+
     return BlocBuilder<SearchCubit, SearchState>(builder: (context, state) {
       if (state is SearchSuccessState) {
         isSuccess = true;
@@ -90,6 +92,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   changed: (String str) {
                     BlocProvider.of<SearchCubit>(context).searchTracks(str);
                     BlocProvider.of<SearchCubit>(context).searchPlayList(str);
+                    searchRepository.setTextController(_searchController.text);
                   },
                   color: AppColors.colorTextField,
                 )

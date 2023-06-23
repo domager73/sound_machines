@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sound_machines/feature/home_screen/data/playlists_repository.dart';
-import 'package:sound_machines/feature/main/bloc/navigation_cubit.dart';
 import 'package:sound_machines/feature/player/bloc/player_bloc.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
 import 'package:sound_machines/utils/fonts.dart';
@@ -49,7 +48,7 @@ class AppBarWidget extends StatelessWidget {
             canBack
                 ? IconButton(
                     onPressed: () {
-                      BlocProvider.of<NavigationCubit>(context).viewMain();
+                      Navigator.pop(context);
                     },
                     icon: const Icon(
                       Icons.arrow_back,

@@ -13,6 +13,7 @@ class SearchRepository {
   List<Track>? searchTracks = [];
   List<Playlist>? playLists = [];
   List<Playlist>? searchPLayList = [];
+  String textController = '';
 
   SearchRepository({required this.musicService});
 
@@ -87,5 +88,9 @@ class SearchRepository {
     searchPLayList = resPlayList;
 
     searchLoadingState.add(LoadingStateEnum.success);
+  }
+
+  void setTextController(String str) {
+    textController = str;
   }
 }

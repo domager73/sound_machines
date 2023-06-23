@@ -16,6 +16,4 @@ class PlaylistTracksCubit extends Cubit<PlaylistTracksState> {
       if (event == LoadingStateEnum.fail) emit(PlaylistTrackFailState());
     });
   }
-
-
 }

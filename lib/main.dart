@@ -25,9 +25,9 @@ import 'feature/auth/ui/registration_first_screen.dart';
 import 'feature/home_screen/bloc/playlists_cubit.dart';
 import 'feature/home_screen/data/playlists_repository.dart';
 import 'feature/home_screen/ui/home_screen.dart';
-import 'feature/main/bloc/navigation_cubit.dart';
 import 'feature/main/ui/main_screen.dart';
 import 'feature/player/bloc/player_bloc.dart';
+import 'feature/playlist/ui/playlist_screen.dart';
 import 'firebase_options.dart';
 
 
@@ -73,7 +73,8 @@ class _MyAppState extends State<MyApp> {
         '/login_screen': (context) => const LoginScreen(),
         '/register_first_screen': (context) => const RegisterFirstScreen(),
         '/register_second_screen': (context) => const RegisterSecondScreen(),
-        '/homa_screen': (context) => const HomeScreen()
+        '/homa_screen': (context) => const HomeScreen(),
+        '/playList_screen' : (context) => const PlayListScreen(),
       },
       home: const HomePage(),
     );
@@ -142,10 +143,6 @@ class MyBlocProviders extends StatelessWidget {
                 playlistRepository:
                     RepositoryProvider.of<PlaylistRepository>(context),
               )),
-      BlocProvider(
-        lazy: false,
-        create: (_) => NavigationCubit(),
-      ),
       BlocProvider(
         lazy: false,
         create: (_) => SearchCubit(
