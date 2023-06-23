@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sound_machines/feature/main/bloc/navigation_cubit.dart';
 import 'package:sound_machines/models/playlist.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sound_machines/utils/fonts.dart';
@@ -25,7 +24,7 @@ class PlaylistWidget extends StatelessWidget {
             onTap: () {
               RepositoryProvider.of<PlaylistRepository>(context).playlistData = playlist;
               RepositoryProvider.of<PlaylistRepository>(context).loadPlaylistTracks(playlistId: playlist.id);
-              BlocProvider.of<NavigationCubit>(context).viewPlaylist();
+              Navigator.pushNamed(context, '/playList_screen');
             },
             child: Container(
               width: width,
