@@ -42,10 +42,10 @@ class _StaticPLayerState extends State<StaticPLayer> {
                       rightSwipeWidget: Container(),
                       leftSwipeWidget: Container(),
                       onLeftSwipe: () {
-                        repository.previousTrack();
+                        repository.nextTrack();
                       },
                       onRightSwipe: () {
-                        repository.nextTrack();
+                        repository.previousTrack();
                       },
                       child: InkWell(
                         child: Row(

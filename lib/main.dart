@@ -30,8 +30,6 @@ import 'feature/player/bloc/player_bloc.dart';
 import 'feature/playlist/ui/playlist_screen.dart';
 import 'firebase_options.dart';
 
-
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = CustomBlocObserver();
@@ -74,9 +72,11 @@ class _MyAppState extends State<MyApp> {
         '/register_first_screen': (context) => const RegisterFirstScreen(),
         '/register_second_screen': (context) => const RegisterSecondScreen(),
         '/homa_screen': (context) => const HomeScreen(),
-        '/playList_screen' : (context) => const PlayListScreen(),
+        '/playList_screen': (context) => const PlayListScreen(),
       },
-      home: const HomePage(),
+      home: HomePage(
+        repositoryProvider: RepositoryProvider.of<PlayerRepository>(context),
+      ),
     );
   }
 }
@@ -148,13 +148,26 @@ class MyBlocProviders extends StatelessWidget {
         create: (_) => SearchCubit(
             searchRepository: RepositoryProvider.of<SearchRepository>(context)),
       ),
-
     ], child: MyApp());
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key, required this.repositoryProvider})
+      : super(key: key);
+
+  final PlayerRepository repositoryProvider;
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void dispose() {
+    widget.repositoryProvider.audioPlayer.stop();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

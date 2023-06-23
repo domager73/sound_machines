@@ -10,7 +10,6 @@ import '../../../models/track.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/fonts.dart';
 import '../../../widgets/slivers/sliver_playlistContainer.dart';
-import '../../../widgets/text_field/custom_text_field.dart';
 import '../../../widgets/text_field/dynamic_text_field.dart';
 import '../../../widgets/treck/small_treck.dart';
 import '../../home_screen/data/playlists_repository.dart';
@@ -61,7 +60,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
     BlocProvider.of<SearchCubit>(context).initialLoadSearch();
 
-    final _searchController = TextEditingController(text: repository.textController);
+    final _searchController = TextEditingController(text: searchRepository.textController);
 
     return BlocBuilder<SearchCubit, SearchState>(builder: (context, state) {
       if (state is SearchSuccessState) {

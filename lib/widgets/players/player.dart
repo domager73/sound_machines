@@ -193,14 +193,14 @@ class _CustomPlayerState extends State<CustomPlayer> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               InkWell(
-                                child: Icon(
+                                child: const Icon(
                                   Icons.add,
                                   color: Colors.white,
                                 ),
                                 onTap: () {},
                               ),
                               InkWell(
-                                child: Icon(
+                                child: const Icon(
                                   Icons.add,
                                   color: Colors.white,
                                 ),
