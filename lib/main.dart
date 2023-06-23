@@ -40,7 +40,7 @@ Future<void> main() async {
 }
 
 class MyApp extends StatefulWidget {
-  MyApp({super.key});
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -148,7 +148,7 @@ class MyBlocProviders extends StatelessWidget {
         create: (_) => SearchCubit(
             searchRepository: RepositoryProvider.of<SearchRepository>(context)),
       ),
-    ], child: MyApp());
+    ], child: const MyApp());
   }
 }
 

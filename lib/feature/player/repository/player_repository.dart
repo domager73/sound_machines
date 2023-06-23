@@ -3,29 +3,27 @@ import 'dart:developer';
 import 'package:sound_machines/utils/constants.dart';
 import 'package:audioplayers/audioplayers.dart';
 
+import '../../../models/time_data.dart';
 import '../../../models/track.dart';
+import '../../../models/track_data.dart';
 import '../../../servise/music_service.dart';
 
 class PlayerRepository {
   final MusicService musicService;
 
   PlayerRepository({required this.musicService}) : super() {
-    allChanges();
     stateChanges();
     positionChanges();
     durationChanges();
     playerStream.stream.listen((event) {
-      print(event);
+      log(event.toString());
     });
   }
 
   BehaviorSubject<LoadingStateEnum> trackDataLoadingState =
       BehaviorSubject<LoadingStateEnum>.seeded(LoadingStateEnum.wait);
-
   BehaviorSubject<TrackData?> playerStream =
       BehaviorSubject<TrackData?>.seeded(null);
-  BehaviorSubject<List<Track>> trackChanges =
-      BehaviorSubject<List<Track>>.seeded([]);
   BehaviorSubject<String?> playlistChanges =
       BehaviorSubject<String?>.seeded(null);
 
@@ -40,36 +38,19 @@ class PlayerRepository {
 
   Future loadQueue() async {
     queue = await musicService.getAllTracks();
-    trackChanges.add(queue ?? []);
   }
 
   void nextTrack() async {
     queue?[currentTrack].isPlay = false;
     currentTrack < queue!.length - 1 ? currentTrack++ : currentTrack = 0;
-    trackData = queue?[currentTrack];
-    queue?[currentTrack].isPlay = true;
-    trackChanges.add(queue!);
-    trackStreamData = TrackData(
-        timeData:
-            TrackTimeData(duration: Duration.zero, position: Duration.zero),
-        data: trackData!,
-        isPlaying: false);
-    playerStream.add(trackStreamData);
+    selectTrack(currentTrack);
     audioPlayer.play(UrlSource(trackData!.audioUrl));
   }
 
   void previousTrack() {
     queue?[currentTrack].isPlay = false;
     currentTrack > 0 ? currentTrack-- : currentTrack = queue!.length - 1;
-    trackData = queue?[currentTrack];
-    queue?[currentTrack].isPlay = true;
-    trackChanges.add(queue!);
-    trackStreamData = TrackData(
-        timeData:
-            TrackTimeData(duration: Duration.zero, position: Duration.zero),
-        data: trackData!,
-        isPlaying: false);
-    playerStream.add(trackStreamData);
+    selectTrack(currentTrack);
     audioPlayer.play(UrlSource(trackData!.audioUrl));
   }
 
@@ -100,12 +81,13 @@ class PlayerRepository {
     }
   }
 
-  void allChanges() async {}
-
   void stateChanges() async {
     audioPlayer.onPlayerStateChanged.listen((event) {
       isPlaying = event == PlayerState.playing;
       playerStream.add(trackStreamData.copyWithPlaying(isPlaying));
+      if (event == PlayerState.completed) {
+        nextTrack();
+      }
       log(isPlaying.toString());
     });
   }
@@ -117,7 +99,6 @@ class PlayerRepository {
         trackStreamData.timeData =
             trackStreamData.timeData.copyWithDuration(event);
         playerStream.add(trackStreamData);
-        print('-----------------------------------${event.inSeconds}');
       }
     });
   }
@@ -129,28 +110,29 @@ class PlayerRepository {
           trackStreamData.timeData.copyWithPosition(event);
       trackStreamData.timeData = trackStreamData.timeData
           .copyWithDuration(await audioPlayer.getDuration() ?? Duration.zero);
-      //print(trackStreamData);
       playerStream.add(trackStreamData);
     });
+  }
+
+  void selectTrack(int ind) {
+    trackData = queue?[currentTrack];
+    queue?[currentTrack].isPlay = true;
+    trackStreamData = TrackData(
+        timeData:
+            TrackTimeData(duration: Duration.zero, position: Duration.zero),
+        data: trackData!,
+        isPlaying: false);
+    playerStream.add(trackStreamData);
   }
 
   Future setNewPlaylist(String? playlistId, List<Track> newQueue,
       {int index = 0}) async {
     queue = newQueue;
-    trackChanges.add(queue!);
     currentPlayListId = playlistId;
-    final track = queue![index];
     currentTrack = index;
-    trackData = queue?[index];
-    queue?[index].isPlay = true;
 
-    trackStreamData = TrackData(
-        timeData:
-            TrackTimeData(duration: Duration.zero, position: Duration.zero),
-        data: track,
-        isPlaying: false);
-    playerStream.add(trackStreamData);
-    await audioPlayer.play(UrlSource(track.audioUrl));
+    selectTrack(currentTrack);
+    await audioPlayer.play(UrlSource(queue![index].audioUrl));
 
     playlistChanges.add(playlistId);
     trackDataLoadingState.add(LoadingStateEnum.success);
@@ -170,56 +152,12 @@ class PlayerRepository {
     if (trackData?.id != (customId ?? track.id)) {
       queue?[currentTrack].isPlay = false;
       currentTrack = customId ?? track.id;
-      trackData = queue?[currentTrack];
-      queue?[currentTrack].isPlay = true;
-      trackChanges.add(queue!);
-      trackStreamData = TrackData(
-          timeData:
-              TrackTimeData(duration: Duration.zero, position: Duration.zero),
-          data: track,
-          isPlaying: false);
-      playerStream.add(trackStreamData);
+      selectTrack(currentTrack);
       f
           ? await audioPlayer.play(UrlSource(track.audioUrl))
           : await audioPlayer.setSourceUrl(track.audioUrl);
     } else {
       await audioPlayer.resume();
     }
-  }
-}
-
-class TrackData {
-  Track data;
-  TrackTimeData timeData;
-  bool isPlaying;
-
-  TrackData(
-      {required this.timeData, required this.data, required this.isPlaying});
-
-  TrackData copyWithTTD(TrackTimeData trackTimeData) {
-    return TrackData(timeData: trackTimeData, data: data, isPlaying: isPlaying);
-  }
-
-  TrackData copyWithPlaying(bool playing) {
-    return TrackData(timeData: timeData, data: data, isPlaying: playing);
-  }
-
-  @override
-  String toString() =>
-      '------------------------------------\n\nname: ${data.name} \n image: ${data.imageUrl} \n audio: ${data.audioUrl} \n duration: ${timeData.duration.inSeconds} \n position: ${timeData.position.inSeconds}\n\n---------------------';
-}
-
-class TrackTimeData {
-  Duration duration;
-  Duration position;
-
-  TrackTimeData({required this.duration, required this.position});
-
-  TrackTimeData copyWithPosition(Duration newPosition) {
-    return TrackTimeData(duration: duration, position: newPosition);
-  }
-
-  TrackTimeData copyWithDuration(Duration newDuration) {
-    return TrackTimeData(duration: newDuration, position: position);
   }
 }

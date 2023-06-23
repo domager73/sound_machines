@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sound_machines/utils/fonts.dart';
 
 import '../../feature/home_screen/data/playlists_repository.dart';
-import '../../feature/playlist/ui/playlist_screen.dart';
 
+// ignore: must_be_immutable
 class PlaylistWidget extends StatelessWidget {
   PlaylistWidget({super.key, required this.playlist});
 
@@ -15,7 +15,7 @@ class PlaylistWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width * 0.47;
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,

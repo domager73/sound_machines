@@ -11,7 +11,7 @@ class CustomTextField extends StatelessWidget{
   final bool isError;
   final double borderRadius;
 
-  CustomTextField({
+  const CustomTextField({
     Key? key,
     required this.controller,
     required this.isError,

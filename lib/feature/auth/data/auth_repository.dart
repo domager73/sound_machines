@@ -1,9 +1,7 @@
 import 'dart:developer';
 
-import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:sound_machines/utils/constants.dart';
 
 import '../../../servise/auth_service.dart';
 

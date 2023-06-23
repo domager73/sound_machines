@@ -11,7 +11,6 @@ class AuthService {
   void subscribeUserChanges() async {
     FirebaseAuth.instance.userChanges().listen((User? user) {
       if (user != null) {
-        print(user.toString());
       } else {
         _firebaseAuth.currentUser?.reload();
       }

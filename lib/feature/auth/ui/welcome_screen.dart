@@ -75,12 +75,12 @@ class WelcomeScreen extends StatelessWidget {
                     text: 'Войти',
                     styleText: AppTypography.font20fff,
                     color: AppColors.blackColor,
-                    border: Border(),
+                    border: const Border(),
                     borderRadius: 20,
                     height: 40,
                     width: MediaQuery.of(context).size.width * 0.8,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   )
                 ],

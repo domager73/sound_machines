@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
@@ -9,9 +7,9 @@ import 'package:sound_machines/feature/search/repository/search_repository.dart'
 import '../../../models/track.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/fonts.dart';
-import '../../../widgets/slivers/sliver_playlistContainer.dart';
+import '../../../widgets/containers/playlist_container.dart';
+import '../../../widgets/containers/small_treck.dart';
 import '../../../widgets/text_field/dynamic_text_field.dart';
-import '../../../widgets/treck/small_treck.dart';
 import '../../home_screen/data/playlists_repository.dart';
 
 class SearchScreen extends StatefulWidget {

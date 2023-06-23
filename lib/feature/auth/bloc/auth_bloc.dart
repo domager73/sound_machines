@@ -1,8 +1,6 @@
-import 'dart:async';
-
+// ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:sound_machines/utils/constants.dart';
 
 import '../../../app_repository.dart';
 import '../data/auth_repository.dart';

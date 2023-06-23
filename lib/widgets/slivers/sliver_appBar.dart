@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sound_machines/feature/home_screen/data/playlists_repository.dart';
-import 'package:sound_machines/feature/player/bloc/player_bloc.dart';
 import 'package:sound_machines/feature/player/repository/player_repository.dart';
 import 'package:sound_machines/utils/fonts.dart';
 
@@ -12,7 +11,6 @@ class AppBarWidget extends StatelessWidget {
   final String imagePath;
   final bool isButtonPlay;
   final double expandedHeight;
-  final bool canBack;
   final bool isPlayList;
 
   const AppBarWidget(
@@ -21,7 +19,6 @@ class AppBarWidget extends StatelessWidget {
       required this.imagePath,
       required this.isButtonPlay,
       required this.expandedHeight,
-      this.canBack = false,
       this.isPlayList = false})
       : super(key: key);
 
@@ -43,24 +40,9 @@ class AppBarWidget extends StatelessWidget {
     }
 
     return SliverAppBar(
-        title: Row(
-          children: [
-            canBack
-                ? IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
-                      size: 25,
-                    ))
-                : Container(),
-            Text(
-              text,
-              style: AppTypography.font32fff,
-            ),
-          ],
+        title: Text(
+          text,
+          style: AppTypography.font32fff,
         ),
         backgroundColor: AppColors.blackColor,
         centerTitle: false,
@@ -79,62 +61,67 @@ class AppBarWidget extends StatelessWidget {
                     fit: BoxFit.cover),
               ),
               child: isPlayList
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                  ? StreamBuilder(
+                    stream: repository.playlistChanges,
+                    builder: (context, snapshot) {
+                      return Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            repository.currentPlayListId ==
-                                    playlistRepository.currentPlaylist
-                                ? StreamBuilder(
-                                    stream: repository.playerStream,
-                                    builder: (context, snapshot) {
-                                      return Column(children: [
-                                        InkWell(
-                                          child: !repository.isPlaying
-                                              ? const Icon(
-                                                  Icons.play_circle,
-                                                  size: 100,
-                                                  color: AppColors.playColor,
-                                                )
-                                              : const Icon(
-                                                  Icons.pause_circle,
-                                                  size: 100,
-                                                  color: AppColors.playColor,
-                                                ),
-                                          onTap: () {
-                                            playAndPause();
-                                          },
-                                        ),
-                                        Text(
-                                          !repository.isPlaying
-                                              ? 'Слушать'
-                                              : 'Пауза',
-                                          style: AppTypography.font16fff,
-                                        ),
-                                      ]);
-                                    })
-                                : Column(
-                                    children: [
-                                      InkWell(
-                                        onTap: playAndPause,
-                                        child: const Icon(
-                                          Icons.play_circle,
-                                          size: 100,
-                                          color: AppColors.playColor,
-                                        ),
-                                      ),
-                                      const Text(
-                                        'Слушать',
-                                        style: AppTypography.font16fff,
-                                      ),
-                                    ],
-                                  )
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                repository.currentPlayListId ==
+                                        playlistRepository.currentPlaylist
+                                    ? StreamBuilder(
+                                        stream: repository.playerStream,
+                                        builder: (context, snapshot) {
+                                          return Column(children: [
+                                            InkWell(
+                                              child: !repository.isPlaying
+                                                  ? const Icon(
+                                                      Icons.play_circle,
+                                                      size: 100,
+                                                      color: AppColors.playColor,
+                                                    )
+                                                  : const Icon(
+                                                      Icons.pause_circle,
+                                                      size: 100,
+                                                      color: AppColors.playColor,
+                                                    ),
+                                              onTap: () {
+                                                playAndPause();
+                                              },
+                                            ),
+                                            Text(
+                                              !repository.isPlaying
+                                                  ? 'Слушать'
+                                                  : 'Пауза',
+                                              style: AppTypography.font16fff,
+                                            ),
+                                          ]);
+                                        })
+                                    : Column(
+                                        children: [
+                                          InkWell(
+                                            onTap: playAndPause,
+                                            child: const Icon(
+                                              Icons.play_circle,
+                                              size: 100,
+                                              color: AppColors.playColor,
+                                            ),
+                                          ),
+                                          const Text(
+                                            'Слушать',
+                                            style: AppTypography.font16fff,
+                                          ),
+                                        ],
+                                      )
+                              ],
+                            )
                           ],
-                        )
-                      ],
-                    )
+                        );
+                    }
+                  )
                   : Container()),
         ));
   }

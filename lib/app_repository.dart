@@ -1,3 +1,4 @@
+// ignore: depend_on_referenced_packages
 import 'package:rxdart/rxdart.dart';
 import 'package:sound_machines/servise/auth_service.dart';
 import 'package:sound_machines/utils/constants.dart';

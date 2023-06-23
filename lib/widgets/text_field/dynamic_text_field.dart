@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sound_machines/utils/colors.dart';
 
 import '../../utils/fonts.dart';
 

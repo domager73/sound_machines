@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sound_machines/utils/fonts.dart';
-import 'package:sound_machines/widgets/slivers/sliver_playlistContainer.dart';
 
+import '../../../widgets/containers/playlist_container.dart';
+import '../../../widgets/containers/small_treck.dart';
 import '../../../widgets/slivers/sliver_appBar.dart';
-import '../../../widgets/treck/small_treck.dart';
 import '../../player/repository/player_repository.dart';
 import '../bloc/playlists_cubit.dart';
 import '../data/playlists_repository.dart';
@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
     void setPlay(int index) async {
       if (PlaylistRepository.homeScreenMixedTracksId == playerRepository.currentPlayListId &&
           playerRepository.queue != null) {
-        playerRepository.setTrack(playerRepository.queue![index ?? 0]);
+        playerRepository.setTrack(playerRepository.queue![index]);
       } else {
         repository.currentPlaylist = PlaylistRepository.homeScreenMixedTracksId;
         playerRepository.setNewPlaylist(PlaylistRepository.homeScreenMixedTracksId, repository.mixedTracks!,
@@ -52,15 +52,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Colors.transparent,
                 ),
               ),
+              const SliverToBoxAdapter(
+                  child: Text(
+                    'Ваш выбор',
+                    style: AppTypography.font32fff,
+                  )),
               SliverToBoxAdapter(
-                  child: Container(
-                child: const Text(
-                  'Ваш выбор',
-                  style: AppTypography.font32fff,
-                ),
-              )),
-              SliverToBoxAdapter(
-                child: Container(
+                child: SizedBox(
                   height: 250.0,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -72,15 +70,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
+              const SliverToBoxAdapter(
+                  child: Text(
+                    'Плейлисты дня',
+                    style: AppTypography.font32fff,
+                  )),
               SliverToBoxAdapter(
-                  child: Container(
-                child: const Text(
-                  'Плейлисты дня',
-                  style: AppTypography.font32fff,
-                ),
-              )),
-              SliverToBoxAdapter(
-                child: Container(
+                child: SizedBox(
                   height: 250.0,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -92,15 +88,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
+              const SliverToBoxAdapter(
+                  child: Text(
+                    'Плейлисты месяца',
+                    style: AppTypography.font32fff,
+                  )),
               SliverToBoxAdapter(
-                  child: Container(
-                child: const Text(
-                  'Плейлисты месяца',
-                  style: AppTypography.font32fff,
-                ),
-              )),
-              SliverToBoxAdapter(
-                child: Container(
+                child: SizedBox(
                   height: 250,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -112,13 +106,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              SliverToBoxAdapter(
-                  child: Container(
-                child: const Text(
-                  'Треки',
-                  style: AppTypography.font32fff,
-                ),
-              )),
+              const SliverToBoxAdapter(
+                  child: Text(
+                    'Треки',
+                    style: AppTypography.font32fff,
+                  )),
               StreamBuilder(
                 stream: playerRepository.playerStream,
                 builder: (context, snapshot) =>  SliverFixedExtentList(

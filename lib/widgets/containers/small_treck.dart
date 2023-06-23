@@ -1,12 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sound_machines/feature/home_screen/data/playlists_repository.dart';
-import 'package:sound_machines/feature/player/repository/player_repository.dart';
 import 'package:sound_machines/utils/colors.dart';
 
-import '../../feature/player/ui/player_screen.dart';
 import '../../models/track.dart';
 import '../../utils/fonts.dart';
 
@@ -25,10 +19,6 @@ class SmallTrekScreen extends StatefulWidget {
 class _SmallTrekScreenState extends State<SmallTrekScreen> {
   @override
   Widget build(BuildContext context) {
-    final repository = RepositoryProvider.of<PlayerRepository>(context);
-    final playlistRepository =
-        RepositoryProvider.of<PlaylistRepository>(context);
-
     return Container(
       decoration: BoxDecoration(
           color: widget.track.isPlay
@@ -66,7 +56,6 @@ class _SmallTrekScreenState extends State<SmallTrekScreen> {
                 ],
               ),
               onTap: () {
-                print(widget.customId ?? widget.track.id);
                 widget.onTap(widget.customId ?? widget.track.id);
                 setState(() {
                   widget.track.isPlay = true;
