@@ -84,7 +84,8 @@ class PlayerRepository {
   void stateChanges() async {
     audioPlayer.onPlayerStateChanged.listen((event) {
       isPlaying = event == PlayerState.playing;
-      playerStream.add(trackStreamData.copyWithPlaying(isPlaying));
+      trackStreamData.setPlaying(isPlaying);
+      playerStream.add(trackStreamData);
       if (event == PlayerState.completed) {
         nextTrack();
       }
@@ -96,8 +97,7 @@ class PlayerRepository {
     audioPlayer.onDurationChanged.listen((event) {
       if (event.inSeconds > 0) {
         trackStreamData.data = trackData!;
-        trackStreamData.timeData =
-            trackStreamData.timeData.copyWithDuration(event);
+        trackStreamData.timeData.setDuration(event);
         playerStream.add(trackStreamData);
       }
     });
@@ -106,10 +106,8 @@ class PlayerRepository {
   void positionChanges() async {
     audioPlayer.onPositionChanged.listen((event) async {
       trackStreamData.data = trackData!;
-      trackStreamData.timeData =
-          trackStreamData.timeData.copyWithPosition(event);
-      trackStreamData.timeData = trackStreamData.timeData
-          .copyWithDuration(await audioPlayer.getDuration() ?? Duration.zero);
+      trackStreamData.timeData.setPosition(event);
+      trackStreamData.timeData.setDuration(await audioPlayer.getDuration() ?? Duration.zero);
       playerStream.add(trackStreamData);
     });
   }
