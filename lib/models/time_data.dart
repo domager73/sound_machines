@@ -4,11 +4,11 @@ class TrackTimeData {
 
   TrackTimeData({required this.duration, required this.position});
 
-  TrackTimeData copyWithPosition(Duration newPosition) {
-    return TrackTimeData(duration: duration, position: newPosition);
+  void setPosition(Duration newPosition){
+    position = newPosition;
   }
 
-  TrackTimeData copyWithDuration(Duration newDuration) {
-    return TrackTimeData(duration: newDuration, position: position);
+  void setDuration(Duration newDuration){
+    duration = newDuration;
   }
 }

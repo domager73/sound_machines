@@ -10,12 +10,12 @@ class TrackData {
   TrackData(
       {required this.timeData, required this.data, required this.isPlaying});
 
-  TrackData copyWithTTD(TrackTimeData trackTimeData) {
-    return TrackData(timeData: trackTimeData, data: data, isPlaying: isPlaying);
+  void setTTD(TrackTimeData trackTimeData) {
+    timeData = trackTimeData;
   }
 
-  TrackData copyWithPlaying(bool playing) {
-    return TrackData(timeData: timeData, data: data, isPlaying: playing);
+  void setPlaying(bool isPlaying){
+    isPlaying = isPlaying;
   }
 
   @override
